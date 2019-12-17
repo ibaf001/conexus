@@ -8,21 +8,21 @@
 <h1>Project</h1>
 
 <a href="{{ url_for('add_project') }}"> Add</a>
-<table style="width:100%">
+<table style="width:50%">
     <tr>
         <th>ID</th>
+        <th>Jur</th>
         <th>Name</th>
     </tr>
     {% for emp in employees %}
     <tr>
-        <td>{{ emp.id }}</td>
+        <td><a href="{{ url_for('project', index=emp.id) }}">{{ emp.id }}</a></td>
+        <td>{{ emp.code }}</td>
         <td>{{ emp.name }}</td>
-        <td><a href="{{ url_for('add_project') }}"> delete</a>
+        <td><a href="{{ url_for('remove_project', index=emp.id) }}"> delete</a>
         </td>
     </tr>
     {% endfor %}
-
-
 </table>
 
 </body>

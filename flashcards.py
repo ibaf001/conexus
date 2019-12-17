@@ -62,14 +62,29 @@ def projects():
     num_rows = cur.rowcount
     for x in range(0, num_rows):
         row = cur.fetchone()
-        emp = Employee(row['id'], row['Assignee'])
+        emp = Employee(row['id'], row['Jur'], row['Assignee'])
         employees.append(emp)
 
     return render_template('projects.html', employees=employees)
 
+
 @app.route('/add_project')
 def add_project():
     return 'success'
+
+
+@app.route('/project/<int:index>')
+def project(index):
+    cur = mysql.connection.cursor()
+    cur.execute('''SELECT * FROM Project where id = {}'''.format(index))
+    row = cur.fetchone()
+    emp = Employee(index, row['Jur'], row['Assignee'])
+    return render_template('project.html', emp=emp)
+
+
+@app.route('/remove_project/<int:index>')
+def remove_project(index):
+    return 'project with index {} removed'.format(index)
 
 
 def save_db():
