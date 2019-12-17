@@ -70,7 +70,31 @@ def projects():
 
 @app.route('/add_project', methods=["GET", "POST"])
 def add_project():
-    return render_template('add_project.html')
+    try:
+        if request.method == "POST":
+            id = request.form['id']
+            jur = request.form['jur']
+            county = request.form['county']
+            municipality = request.form['municipality']
+            assignee = request.form['assignee']
+            cur = mysql.connection.cursor()
+            cur.execute('''INSERT INTO Project (id, Jur, County, Municipality, Assignee) VALUES 
+            ({}, '{}',  '{}' ,'{}', '{}');'''.format(id,jur,county,municipality,assignee))
+            mysql.connection.commit()
+            return redirect(url_for('projects'))
+        else:
+            print('sellltart bafumba')
+            return render_template('add_project.html')
+    except:
+        abort(404)
+
+
+@app.route('/del_project/<int:index>')
+def del_project(index):
+    cur = mysql.connection.cursor()
+    cur.execute('''DELETE FROM Project where id = {}'''.format(index))
+    mysql.connection.commit()
+    return redirect(url_for('projects'))
 
 
 @app.route('/project/<int:index>')
