@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %} Add Project {% endblock %}
+{% block content %}
+<h1>Add new project</h1>
+<form method="post">
+    <p>
+        Id:
+        <input type="tex" name="id">
+    </p>
+    <p>
+        Jur:
+        <input type="text" name="jur">
+    </p>
+    <p>
+        County:
+        <input type="text" name="county">
+    </p>
+    <p>
+        Municipality:
+        <input type="text" name="municipality">
+    </p>
+        <p>
+        Assignee:
+        <input type="text" name="assignee">
+    </p>
+    <button type="submit">Create</button>
+</form>
+{% endblock %}

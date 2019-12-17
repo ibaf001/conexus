@@ -68,9 +68,9 @@ def projects():
     return render_template('projects.html', employees=employees)
 
 
-@app.route('/add_project')
+@app.route('/add_project', methods=["GET", "POST"])
 def add_project():
-    return 'success'
+    return render_template('add_project.html')
 
 
 @app.route('/project/<int:index>')
