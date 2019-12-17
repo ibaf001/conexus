@@ -7,3 +7,9 @@ def load_db():
 
 
 db = load_db()
+
+
+class Employee:
+    def __init__(self, id, name):
+        self.id = id
+        self.name = name

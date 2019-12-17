@@ -1,15 +1,89 @@
-from flask import Flask, render_template
-from model import db
+from flask import (Flask, render_template, abort, jsonify,
+                   request, redirect, url_for)
+from flask_mysqldb import MySQL
+from model import db, Employee
 
 app = Flask(__name__)
+app.config['MYSQL_USER'] = 'root'
+app.config['MYSQL_PASSWORD'] = 'johanna14'
+app.config['MYSQL_HOST'] = 'localhost'
+app.config['MYSQL_DB'] = 'tracker'
+app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
+
+mysql = MySQL(app)
 
 
 @app.route("/")
 def welcome():
-    return render_template('welcome.html')
+    return render_template('welcome.html',
+                           cards=db)
 
 
 @app.route("/card/<int:index>")
 def card_view(index):
-    card = db[index]
-    return render_template("card.html", card=card)
+    try:
+        card = db[index]
+        max_index = len(db) - 1
+        return render_template("card.html", card=card, index=index, max_index=max_index)
+    except IndexError:
+        abort(404)
+
+
+@app.route("/api/card/")
+def api_card_list():
+    return jsonify(db)
+
+
+@app.route("/api/card/<int:index>")
+def api_card_detail(index):
+    try:
+        return db[index]
+    except IndexError:
+        abort(404)
+
+
+@app.route('/add_card', methods=["GET", "POST"])
+def add_card():
+    if request.method == "POST":
+        card = {"question": request.form['question'],
+                "answer": request.form['answer']}
+        db.append(card)
+        return redirect(url_for('card_view', index=len(db) - 1))
+    else:
+        return render_template("add_card.html")
+
+
+@app.route('/projects')
+def projects():
+    cur = mysql.connection.cursor()
+    cur.execute('''SELECT * FROM Project''')
+
+    employees = []
+    num_rows = cur.rowcount
+    for x in range(0, num_rows):
+        row = cur.fetchone()
+        emp = Employee(row['id'], row['Assignee'])
+        employees.append(emp)
+
+    return render_template('projects.html', employees=employees)
+
+@app.route('/add_project')
+def add_project():
+    return 'success'
+
+
+def save_db():
+    pass
+
+
+@app.route('/remove_card/<int:index>', methods=["GET", "POST"])
+def remove_card(index):
+    try:
+        if request.method == "POST":
+            del db[index]
+            save_db()
+            return redirect(url_for('welcome'))
+        else:
+            return render_template("remove_card.html", card=db[index])
+    except IndexError:
+        abort(404)
