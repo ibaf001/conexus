@@ -73,3 +73,14 @@ def project(index):
 @app.route('/remove_project/<int:index>')
 def remove_project(index):
     return 'project with index {} removed'.format(index)
+
+
+@app.route('/upload', methods=["GET", "POST"])
+def upload():
+    if request.method == "POST":
+        files = request.files.getlist('file')
+        for x in files:
+            print(x)
+        return 'success'
+    else:
+        return 'landing to upload page'
