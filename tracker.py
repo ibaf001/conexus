@@ -2,8 +2,12 @@ from flask import (Flask, render_template, abort, jsonify,
                    request, redirect, url_for)
 from flask_mysqldb import MySQL
 from model import db, Employee
+from forms import RegistrationForm, LoginForm
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = '850b0126f8f89a2637d77e2d29086569'
+
+
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = 'johanna14'
 app.config['MYSQL_HOST'] = 'localhost'
@@ -30,7 +34,7 @@ def projects():
         emp = Employee(row['id'], row['Jur'], row['Assignee'])
         employees.append(emp)
 
-    return render_template('projects.html', employees=employees)
+    return render_template('projects.html', title='All Projects', employees=employees)
 
 
 @app.route('/add_project', methods=["GET", "POST"])
@@ -67,12 +71,7 @@ def project(index):
     cur.execute('''SELECT * FROM Project where id = {}'''.format(index))
     row = cur.fetchone()
     emp = Employee(index, row['Jur'], row['Assignee'])
-    return render_template('project.html', emp=emp)
-
-
-@app.route('/remove_project/<int:index>')
-def remove_project(index):
-    return 'project with index {} removed'.format(index)
+    return render_template('project.html', title='Project', emp=emp)
 
 
 @app.route('/upload', methods=["GET", "POST"])
@@ -84,3 +83,15 @@ def upload():
         return 'success'
     else:
         return 'landing to upload page'
+
+
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    form = RegistrationForm()
+    return render_template('register.html', title='Register', form=form)
+
+
+@app.route("/login")
+def login():
+    form = LoginForm()
+    return render_template('login.html', title='Login', form=form)
