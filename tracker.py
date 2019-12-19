@@ -1,4 +1,4 @@
-from flask import (Flask, render_template, abort, jsonify,
+from flask import (Flask, render_template, abort, jsonify,flash,
                    request, redirect, url_for)
 from flask_mysqldb import MySQL
 from model import db, Employee
@@ -18,7 +18,7 @@ mysql = MySQL(app)
 
 
 @app.route("/")
-def welcome():
+def home():
     return render_template('home.html')
 
 
@@ -88,6 +88,9 @@ def upload():
 @app.route("/register", methods=["GET", "POST"])
 def register():
     form = RegistrationForm()
+    if form.validate_on_submit():
+        flash(f'Account created for {form.username.data}!', 'success')
+        return redirect(url_for('home'))
     return render_template('register.html', title='Register', form=form)
 
 
