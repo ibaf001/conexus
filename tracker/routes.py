@@ -2,8 +2,8 @@ from flask import render_template, url_for, flash, redirect, request, abort
 
 from tracker import app,  db, bcrypt
 from tracker import mysql
-from tracker.forms import RegistrationForm, LoginForm
-from tracker.models import Employee, User
+from tracker.forms import RegistrationForm, LoginForm, ProjectForm
+from tracker.models import Employee, User, Project
 from flask_login import login_user, current_user, logout_user, login_required
 
 
@@ -33,22 +33,11 @@ def projects():
 @app.route('/add_project', methods=["GET", "POST"])
 @login_required
 def add_project():
-    try:
-        if request.method == "POST":
-            id = request.form['id']
-            jur = request.form['jur']
-            county = request.form['county']
-            municipality = request.form['municipality']
-            assignee = request.form['assignee']
-            cur = mysql.connection.cursor()
-            cur.execute('''INSERT INTO Project (id, Jur, County, Municipality, Assignee) VALUES 
-            ({}, '{}',  '{}' ,'{}', '{}');'''.format(id, jur, county, municipality, assignee))
-            mysql.connection.commit()
-            return redirect(url_for('projects'))
-        else:
-            return render_template('add_project.html')
-    except:
-        abort(404)
+    form = ProjectForm()
+    if form.validate_on_submit():
+        flash('You project has been created', 'success')
+        return redirect(url_for('home'))
+    return render_template('add_project.html', title ='New Project', form=form)
 
 
 @app.route('/del_project/<int:index>')

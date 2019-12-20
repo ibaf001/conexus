@@ -1,28 +1,32 @@
 {% extends "base.html" %}
-{% block title %} Add Project {% endblock %}
 {% block content %}
-<h1>Add new project</h1>
-<form method="post">
-    <p>
-        Id:
-        <input type="tex" name="id">
-    </p>
-    <p>
-        Jur:
-        <input type="text" name="jur">
-    </p>
-    <p>
-        County:
-        <input type="text" name="county">
-    </p>
-    <p>
-        Municipality:
-        <input type="text" name="municipality">
-    </p>
-        <p>
-        Assignee:
-        <input type="text" name="assignee">
-    </p>
-    <button type="submit">Create</button>
-</form>
-{% endblock %}
+    <div class="content-section">
+        <form method="POST" action="">
+            {{ form.hidden_tag() }}
+            <fieldset class="content-section">
+                <legend class="border-bottom mb-4">Project Details</legend>
+                <div class="form-group">
+                    {{ form.code.label(class="form-control-label") }}
+                    {{ form.code(class="form-control  form-control-lg") }}
+                </div>
+                <div class="form-group">
+                    {{ form.client.label(class="form-control-label") }}
+                    {{ form.client(class="form-control  form-control-lg") }}
+                </div>
+                <div class="form-group">
+                    {{ form.county.label(class="form-control-label") }}
+                    {{ form.county(class="form-control  form-control-lg") }}
+                </div>
+                <div class="form-group">
+                    {{ form.municipality.label(class="form-control-label") }}
+                    {{ form.municipality(class="form-control  form-control-lg") }}
+                </div>
+            </fieldset>
+            <div class="form-group">
+                    {{ form.submit(class="btn btn-outline-info") }}
+            </div>
+        </form>
+    </div>
+
+
+{% endblock content %}

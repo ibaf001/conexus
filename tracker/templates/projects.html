@@ -1,8 +1,10 @@
 {% extends "base.html" %}
 {% block title %} All Projects {% endblock %}
 {% block content %}
+
 <a href="{{ url_for('add_project') }}"> <button class="btn btn-info">Add Project</button></a>
-<table class="table" style="width:100%">
+<br><br>
+<table class="table table-dark" >
     <tr>
         <th>ID</th>
         <th>Jur</th>

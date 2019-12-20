@@ -27,3 +27,12 @@ class LoginForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     remember = BooleanField('Remember me')
     submit = SubmitField('Login')
+
+
+class ProjectForm(FlaskForm):
+    code = StringField('Code', validators=[DataRequired()])
+    client = StringField('Client', validators=[DataRequired()])
+    county = StringField('County', validators=[DataRequired()])
+    municipality = StringField('Municipality', validators=[DataRequired()])
+
+    submit = SubmitField('Add Project')
