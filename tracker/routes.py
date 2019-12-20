@@ -15,6 +15,7 @@ def home():
 
 
 @app.route('/projects')
+@login_required
 def projects():
     cur = mysql.connection.cursor()
     cur.execute('''SELECT * FROM Project''')
@@ -30,6 +31,7 @@ def projects():
 
 
 @app.route('/add_project', methods=["GET", "POST"])
+@login_required
 def add_project():
     try:
         if request.method == "POST":
@@ -59,6 +61,7 @@ def del_project(index):
 
 
 @app.route('/project/<int:index>')
+@login_required
 def project(index):
     cur = mysql.connection.cursor()
     cur.execute('''SELECT * FROM Project where id = {}'''.format(index))
@@ -116,7 +119,6 @@ def logout():
     return redirect(url_for('home'))
 
 @app.route('/account')
-@login_required
 def account():
     return render_template('account.html', title='Account')
 
