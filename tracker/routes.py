@@ -1,21 +1,9 @@
-from flask import (Flask, render_template, abort, jsonify,flash,
-                   request, redirect, url_for)
-from flask_mysqldb import MySQL
-from model import db, Employee
-from forms import RegistrationForm, LoginForm
-
-app = Flask(__name__)
-app.config['SECRET_KEY'] = '850b0126f8f89a2637d77e2d29086569'
-
-
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'johanna14'
-app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_DB'] = 'tracker'
-app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
-
-mysql = MySQL(app)
-
+from tracker import app, db, bcrypt
+from tracker.models import Employee
+from flask import render_template, url_for, flash, redirect, request, abort
+from tracker.forms import RegistrationForm, LoginForm
+from flask_login import login_user, current_user, logout_user, login_required
+from tracker import mysql
 
 @app.route("/")
 @app.route("/home")
@@ -64,6 +52,7 @@ def del_project(index):
     cur.execute('''DELETE FROM Project where id = {}'''.format(index))
     mysql.connection.commit()
     return redirect(url_for('projects'))
+
 
 
 @app.route('/project/<int:index>')
