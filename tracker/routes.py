@@ -1,11 +1,10 @@
 from flask import render_template, url_for, flash, redirect, request, abort
 
-from tracker import app,  db, bcrypt
+from tracker import app, db, bcrypt
 from tracker import mysql
 from tracker.forms import RegistrationForm, LoginForm, ProjectForm
 from tracker.models import Employee, User, Project
 from flask_login import login_user, current_user, logout_user, login_required
-
 
 
 @app.route("/")
@@ -17,17 +16,9 @@ def home():
 @app.route('/projects')
 @login_required
 def projects():
-    cur = mysql.connection.cursor()
-    cur.execute('''SELECT * FROM Project''')
 
-    employees = []
-    num_rows = cur.rowcount
-    for x in range(0, num_rows):
-        row = cur.fetchone()
-        emp = Employee(row['id'], row['Jur'], row['Assignee'])
-        employees.append(emp)
-
-    return render_template('projects.html', title='All Projects', employees=employees)
+    projects = Project.query.filter_by(user_id=current_user.id).all()
+    return render_template('projects.html', title='All Projects', projects=projects)
 
 
 @app.route('/add_project', methods=["GET", "POST"])
@@ -35,18 +26,23 @@ def projects():
 def add_project():
     form = ProjectForm()
     if form.validate_on_submit():
+        project = Project(code=form.code.data, client=form.client.data, county=form.county.data, municipality=form.municipality.data, user_id= current_user.id)
+        db.session.add(project)
+        db.session.commit()
         flash('You project has been created', 'success')
-        return redirect(url_for('home'))
-    return render_template('add_project.html', title ='New Project', form=form)
+        return redirect(url_for('projects'))
+    return render_template('add_project.html', title='New Project', form=form)
 
 
 @app.route('/del_project/<int:index>')
 def del_project(index):
-    cur = mysql.connection.cursor()
-    cur.execute('''DELETE FROM Project where id = {}'''.format(index))
-    mysql.connection.commit()
-    return redirect(url_for('projects'))
+    # cur = mysql.connection.cursor()
+    # cur.execute('''DELETE FROM Project where id = {}'''.format(index))
+    # mysql.connection.commit()
 
+    db.session.query(Project).filter(Project.id == index).delete()
+    db.session.commit()
+    return redirect(url_for('projects'))
 
 
 @app.route('/project/<int:index>')
@@ -91,7 +87,7 @@ def login():
         return redirect(url_for('home'))
     form = LoginForm()
     if form.validate_on_submit():
-        user =User.query.filter_by(email=form.email.data).first()
+        user = User.query.filter_by(email=form.email.data).first()
         if user and bcrypt.check_password_hash(user.password, form.password.data):
             login_user(user, remember=form.remember.data)
             next_page = request.args.get('next')
@@ -101,13 +97,12 @@ def login():
     return render_template('login.html', title='Login', form=form)
 
 
-
 @app.route('/logout')
 def logout():
     logout_user()
     return redirect(url_for('home'))
 
+
 @app.route('/account')
 def account():
     return render_template('account.html', title='Account')
-

@@ -5,6 +5,17 @@
             {{ form.hidden_tag() }}
             <fieldset class="content-section">
                 <legend class="border-bottom mb-4">Project Details</legend>
+<!--                <div class="form-group">-->
+
+<!--                    {{ form.client.label(class="form-control-label") }}-->
+<!--                    <select name="client">-->
+
+<!--                        {% for client in clients %}-->
+<!--                        <option value={{ form.client(class="form-control  form-control-lg") }} > {{ client }}</option>-->
+<!--                        {% endfor %}-->
+<!--                    </select>-->
+<!--                </div>-->
+
                 <div class="form-group">
                     {{ form.code.label(class="form-control-label") }}
                     {{ form.code(class="form-control  form-control-lg") }}
