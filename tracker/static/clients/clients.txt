@@ -1,0 +1,3 @@
+name,fields
+Duke,customerID-customerName-customerEmail
+IPL,customerID-customerName-customerEmail-address

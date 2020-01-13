@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %} All Projects {% endblock %}
+{% block content %}
+
+<select name="client" id="client"  >
+
+    {% for client in clients.keys() %}
+
+    <option value="{{client}}" {% if client == selected %} selected="{{ selected }}" {% endif %}>{{client}}</option>
+
+    {% endfor %}
+
+</select>
+
+
+<form method="POST" action="">
+    {{ form.hidden_tag() }}
+
+        {% for field in form %}
+        <div class="form-group">
+
+            {% if field.type != 'SubmitField' %}
+                {{ field.label(class="form-control-label") }}
+                {{ field(class="form-control  form-control-lg") }}
+            {% else %}
+                {{ field(class="btn btn-outline-info") }}
+            {% endif %}
+        </div>
+        {% endfor %}
+
+</form>
+
+<script>
+    let select_client = document.getElementById('client');
+    select_client.onchange = function(){
+        client = select_client.value;
+<!--        window.location = "{{ url_for('example', name='Comcast') }}";-->
+        window.location = "http://localhost:5000/example" +"/"+client;
+
+    }
+</script>
+
+
+
+
+{% endblock %}
+
+
+

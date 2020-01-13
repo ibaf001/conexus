@@ -2,7 +2,7 @@ from flask import render_template, url_for, flash, redirect, request, abort
 
 from tracker import app, db, bcrypt
 from tracker import mysql
-from tracker.forms import RegistrationForm, LoginForm, ProjectForm
+from tracker.forms import *
 from tracker.models import Employee, User, Project
 from flask_login import login_user, current_user, logout_user, login_required
 
@@ -16,7 +16,6 @@ def home():
 @app.route('/projects')
 @login_required
 def projects():
-
     projects = Project.query.filter_by(user_id=current_user.id).all()
     return render_template('projects.html', title='All Projects', projects=projects)
 
@@ -26,7 +25,8 @@ def projects():
 def add_project():
     form = ProjectForm()
     if form.validate_on_submit():
-        project = Project(code=form.code.data, client=form.client.data, county=form.county.data, municipality=form.municipality.data, user_id= current_user.id)
+        project = Project(code=form.code.data, client=form.client.data, county=form.county.data,
+                          municipality=form.municipality.data, user_id=current_user.id)
         db.session.add(project)
         db.session.commit()
         flash('You project has been created', 'success')
@@ -95,6 +95,30 @@ def login():
         else:
             flash('Login Unsuccessful. Please check email and password', 'danger')
     return render_template('login.html', title='Login', form=form)
+
+
+def get_form(name):
+    name = name.lower()
+    if name == '' or name == 'duke':
+        return DukeForm()
+    elif name == 'ipl':
+        return IPLForm()
+    elif name == 'comcast':
+        return ComcastForm()
+    elif name == 'citizen':
+        return CitizenForm()
+    else:
+        return DukeForm()
+
+
+@app.route("/example/", defaults={'name': 'Duke'}, methods=["GET", "POST"])
+@app.route("/example/<name>", methods=["GET", "POST"])
+def example(name):
+    form = get_form(name)
+    clients = {'Duke': '1', 'IPL': '2', 'Comcast': '3', 'Citizen': '5'}
+    if form.validate_on_submit():
+        print(f'ibo tu as envoyed {form.email.data}')
+    return render_template("example.html", form=form, clients=clients, selected=name)
 
 
 @app.route('/logout')
