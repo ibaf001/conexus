@@ -3,6 +3,7 @@ from flask import render_template, url_for, flash, redirect, request, abort
 from tracker import app, db, bcrypt
 from tracker import mysql
 from tracker.forms import *
+from tracker.utils import *
 from tracker.models import Employee, User, Project
 from flask_login import login_user, current_user, logout_user, login_required
 
@@ -117,7 +118,15 @@ def example(name):
     form = get_form(name)
     clients = ['Duke', 'IPL', 'Comcast', 'Citizen']
     if form.validate_on_submit():
-        print(f'ibo tu as envoyed {form.email.data}')
+        obj = {}
+        for field in form:
+            if field.name not in ('csrf_token', 'submit'):
+                obj[field.label.text] = field.data
+        obj['user_id'] = current_user.id
+        obj['client'] = name
+        saveObj(obj)
+        flash('project created successfully', 'success')
+        return redirect(url_for("example", form=form, clients=clients, selected=name))
     return render_template("example.html", form=form, clients=clients, selected=name)
 
 
