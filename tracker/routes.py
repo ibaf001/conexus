@@ -115,7 +115,7 @@ def get_form(name):
 @app.route("/example/<name>", methods=["GET", "POST"])
 def example(name):
     form = get_form(name)
-    clients = {'Duke': '1', 'IPL': '2', 'Comcast': '3', 'Citizen': '5'}
+    clients = ['Duke', 'IPL', 'Comcast', 'Citizen']
     if form.validate_on_submit():
         print(f'ibo tu as envoyed {form.email.data}')
     return render_template("example.html", form=form, clients=clients, selected=name)

@@ -69,6 +69,7 @@ class ComcastForm(FlaskForm):
 class CitizenForm(FlaskForm):
     id = StringField('id', validators=[DataRequired()])
     name = StringField('name', validators=[DataRequired()])
+    email = StringField('email', validators=[DataRequired()])
     county = StringField('county', validators=[DataRequired()])
     sector = StringField('sector', validators=[DataRequired()])
 
