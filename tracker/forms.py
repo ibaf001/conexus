@@ -39,7 +39,7 @@ class ProjectForm(FlaskForm):
 
 
 class DukeForm(FlaskForm):
-    case = StringField('case', validators=[DataRequired()])
+    case = StringField('case', validators=[DataRequired()], default='DUKE001')
     name = StringField('name', validators=[DataRequired()])
     email = StringField('email', validators=[DataRequired()])
 
@@ -47,9 +47,9 @@ class DukeForm(FlaskForm):
 
 
 class IPLForm(FlaskForm):
-    case = StringField('case', validators=[DataRequired()])
+    case = StringField('case', validators=[DataRequired()], default='IPL555', render_kw={'readonly': True})
     name = StringField('name', validators=[DataRequired()])
-    email = StringField('email', validators=[DataRequired()])
+    email = StringField('email', validators=[DataRequired(), Email()])
     address = StringField('address', validators=[DataRequired()])
 
     submit = SubmitField('Add')
@@ -67,7 +67,7 @@ class ComcastForm(FlaskForm):
 
 
 class CitizenForm(FlaskForm):
-    case = StringField('case', validators=[DataRequired()])
+    case = StringField('case', validators=[DataRequired(), Length(min=2, max=18)])
     name = StringField('name', validators=[DataRequired()])
     email = StringField('email', validators=[DataRequired()])
     county = StringField('county', validators=[DataRequired()])

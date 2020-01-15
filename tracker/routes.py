@@ -124,9 +124,11 @@ def example(name):
                 obj[field.label.text] = field.data
         obj['user_id'] = current_user.id
         obj['client'] = name
-        saveObj(obj)
+        #saveObj(obj)
         flash('project created successfully', 'success')
-        return redirect(url_for("example", form=form, clients=clients, selected=name))
+        print(f'ibolassssssss ...... name is {name}')
+        #return redirect(url_for("example", form=form, clients=clients, selected=name))
+        return render_template("example.html", form=form, clients=clients, selected=name)
     return render_template("example.html", form=form, clients=clients, selected=name)
 
 
