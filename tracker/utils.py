@@ -65,7 +65,7 @@ def retrieve_project_by_id(user_id):
     return projects
 
 
-def remove_project(cl, case):
+def remove_project(case):
     server = SSHTunnelForwarder(
         '10.0.0.141',  # mongo host
         ssh_username='ibo',
@@ -75,7 +75,28 @@ def remove_project(cl, case):
     server.start()
     client = MongoClient('127.0.0.1', server.local_bind_port)
     db = client['ocm']
-    db.projects.remove({'client': cl, 'case': case})
+    db.projects.remove({'case': case})
 
     client.close()
     server.stop()
+
+
+def send_email():
+    import smtplib
+    from email.mime.text import MIMEText
+    from email.mime.multipart import MIMEMultipart
+    address_book = ['ibafumba@digonex.com']
+    msg = MIMEMultipart()
+    sender = 'me@company.com'
+    subject = "My subject"
+    body = "This is my email body"
+    msg['From'] = sender
+    msg['To'] = ','.join(address_book)
+    msg['Subject'] = subject
+    msg.attach(MIMEText(body, 'plain'))
+    text = msg.as_string()
+    s = smtplib.SMTP('smtp.gmail.com')
+    s.sendmail(sender, address_book, text)
+    s.quit()
+
+

@@ -13,7 +13,7 @@
     <tr>
         <td>{{ project['client'] }}</td>
         <td><a href="#"> {{ project['case'] }}</a></td>
-        <td><a href="#"> delete</a>
+        <td><a href="{{ url_for('del_project', case=project['case'])}}"> delete</a>   <!--  del_project/case -->
         <td><a href="#"> Send Email</a>
         </td>
     </tr>

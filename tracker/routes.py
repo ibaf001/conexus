@@ -21,10 +21,11 @@ def projects():
     return render_template('projects.html', title='All Projects', all_projects=all_projects)
 
 
-@app.route('/del_project/<int:index>')
-def del_project(index):
-    db.session.query(Project).filter(Project.id == index).delete()
-    db.session.commit()
+@app.route('/del_project/<case>')
+def del_project(case):
+    # db.session.query(Project).filter(Project.id == index).delete()
+    # db.session.commit()
+    remove_project(case)
     return redirect(url_for('projects'))
 
 
