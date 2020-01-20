@@ -17,30 +17,12 @@ def home():
 @app.route('/projects')
 @login_required
 def projects():
-    projects = Project.query.filter_by(user_id=current_user.id).all()
-    return render_template('projects.html', title='All Projects', projects=projects)
-
-
-@app.route('/add_project', methods=["GET", "POST"])
-@login_required
-def add_project():
-    form = ProjectForm()
-    if form.validate_on_submit():
-        project = Project(code=form.code.data, client=form.client.data, county=form.county.data,
-                          municipality=form.municipality.data, user_id=current_user.id)
-        db.session.add(project)
-        db.session.commit()
-        flash('You project has been created', 'success')
-        return redirect(url_for('projects'))
-    return render_template('add_project.html', title='New Project', form=form)
+    all_projects = retrieve_project_by_id(current_user.id)
+    return render_template('projects.html', title='All Projects', all_projects=all_projects)
 
 
 @app.route('/del_project/<int:index>')
 def del_project(index):
-    # cur = mysql.connection.cursor()
-    # cur.execute('''DELETE FROM Project where id = {}'''.format(index))
-    # mysql.connection.commit()
-
     db.session.query(Project).filter(Project.id == index).delete()
     db.session.commit()
     return redirect(url_for('projects'))
@@ -112,9 +94,10 @@ def get_form(name):
         return DukeForm()
 
 
-@app.route("/example/", defaults={'name': 'Duke'}, methods=["GET", "POST"])
-@app.route("/example/<name>", methods=["GET", "POST"])
-def example(name):
+@app.route("/add_project/", defaults={'name': 'Duke'}, methods=["GET", "POST"])
+@app.route("/add_project/<name>", methods=["GET", "POST"])
+@login_required
+def add_project(name):
     form = get_form(name)
     clients = ['Duke', 'IPL', 'Comcast', 'Citizen']
     if form.validate_on_submit():
@@ -124,12 +107,10 @@ def example(name):
                 obj[field.label.text] = field.data
         obj['user_id'] = current_user.id
         obj['client'] = name
-        #saveObj(obj)
+        # saveObj(obj)
         flash('project created successfully', 'success')
-        print(f'ibolassssssss ...... name is {name}')
-        #return redirect(url_for("example", form=form, clients=clients, selected=name))
-        return render_template("example.html", form=form, clients=clients, selected=name)
-    return render_template("example.html", form=form, clients=clients, selected=name)
+        return render_template("add_project.html", form=form, clients=clients, selected=name)
+    return render_template("add_project.html", form=form, clients=clients, selected=name)
 
 
 @app.route('/logout')

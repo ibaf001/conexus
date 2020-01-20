@@ -6,19 +6,14 @@
 <br><br>
 <table class="table table-dark" >
     <tr>
-        <th>Code</th>
         <th>Client</th>
-        <th>County</th>
-        <th>municipality</th>
+        <th>Case</th>
     </tr>
-    {% for project in projects %}
+    {% for project in all_projects %}
     <tr>
-<!--        <td><a href="{{ url_for('project', index=project.id) }}">{{ project.id }}</a></td>-->
-        <td><a href="#"> {{ project.code }}</a></td>
-        <td>{{ project.client }}</td>
-        <td>{{ project.county }}</td>
-        <td>{{ project.municipality }}</td>
-        <td><a href="{{ url_for('del_project', index=project.id) }}"> delete</a>
+        <td>{{ project['client'] }}</td>
+        <td><a href="#"> {{ project['case'] }}</a></td>
+        <td><a href="#"> delete</a>
         <td><a href="#"> Send Email</a>
         </td>
     </tr>
