@@ -37,11 +37,13 @@ class ProjectForm(FlaskForm):
 
     submit = SubmitField('Add Project')
 
+
 # forms used for projects
 class DukeForm(FlaskForm):
     case = StringField('case', validators=[DataRequired()], default='DUKE001')
     name = StringField('name', validators=[DataRequired()])
     email = StringField('email', validators=[DataRequired()])
+    #assignee = SelectField(u'assignee', choices=['Ibo', 'Briella'])
 
     submit = SubmitField('Add')
 

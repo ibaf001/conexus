@@ -108,7 +108,7 @@ def add_project(name):
                 obj[field.label.text] = field.data
         obj['user_id'] = current_user.id
         obj['client'] = name
-        # saveObj(obj)
+        save_project(obj)
         flash('project created successfully', 'success')
         return render_template("add_project.html", form=form, clients=clients, selected=name)
     return render_template("add_project.html", form=form, clients=clients, selected=name)

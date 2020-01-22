@@ -28,7 +28,7 @@ from sshtunnel import SSHTunnelForwarder
 # server.stop()
 
 
-def saveObj(obj):
+def save_project(obj):
     server = SSHTunnelForwarder(
         '10.0.0.141',  # mongo host
         ssh_username='ibo',
