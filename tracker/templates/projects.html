@@ -12,7 +12,7 @@
     {% for project in all_projects %}
     <tr>
         <td>{{ project['client'] }}</td>
-        <td><a href="#"> {{ project['case'] }}</a></td>
+        <td><a href="{{ url_for('project', case=project['case']) }}"> {{ project['case'] }}</a></td>
         <td><a href="{{ url_for('del_project', case=project['case'])}}"> delete</a>   <!--  del_project/case -->
         <td><a href="#"> Send Email</a>
         </td>

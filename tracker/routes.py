@@ -1,11 +1,13 @@
 from flask import render_template, url_for, flash, redirect, request, abort
-
+import os
 from tracker import app, db, bcrypt
 from tracker import mysql
 from tracker.forms import *
 from tracker.utils import *
 from tracker.models import Employee, User, Project
 from flask_login import login_user, current_user, logout_user, login_required
+from werkzeug.utils import secure_filename
+
 
 
 @app.route("/")
@@ -29,25 +31,28 @@ def del_project(case):
     return redirect(url_for('projects'))
 
 
-@app.route('/project/<int:index>')
+@app.route('/project/<case>')
 @login_required
-def project(index):
-    cur = mysql.connection.cursor()
-    cur.execute('''SELECT * FROM Project where id = {}'''.format(index))
-    row = cur.fetchone()
-    emp = Employee(index, row['Jur'], row['Assignee'])
-    return render_template('project.html', title='Project', emp=emp)
+def project(case):
+
+    return render_template('project.html', title='Project')
 
 
 @app.route('/upload', methods=["GET", "POST"])
 def upload():
     if request.method == "POST":
         files = request.files.getlist('file')
-        for x in files:
-            print(x)
-        return 'success'
+        for file in files:
+            if len(file.filename.strip()) == 0:
+                flash('no file selected', 'info')
+                return redirect(request.url)
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        flash('file(s) uploaded successfully', 'success')
+        return 'gracias!'
+
     else:
-        return 'landing to upload page'
+        return render_template('projects.html')
 
 
 @app.route("/register", methods=["GET", "POST"])

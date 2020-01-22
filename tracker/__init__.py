@@ -13,7 +13,9 @@ app.config['MYSQL_PASSWORD'] = 'johanna14'
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_DB'] = 'tracker'
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
+UPLOAD_FOLDER = '/Users/ibafumba/PycharmProjects/uploads'
 
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 mysql = MySQL(app)
 
 db = SQLAlchemy(app)
