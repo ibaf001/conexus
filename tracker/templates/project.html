@@ -13,13 +13,13 @@
         <td>4444</td>
     </tr>
     <tr>
-        <td><b>Code</b></td>
-        <td>5555</td>
+        <td><b>Case</b></td>
+        <td>{{ case }}</td>
     </tr>
 </table>
 <br>
 <div>
-<form id="upload-form" action="{{ url_for('upload') }}" method="post" enctype="multipart/form-data">
+<form id="upload-form" action="{{ url_for('upload', case=case) }}" method="post" enctype="multipart/form-data">
     <input type="file" name="file" multiple>
     <input type="submit" value="upload">
 </form>

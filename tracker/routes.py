@@ -1,4 +1,4 @@
-from flask import render_template, url_for, flash, redirect, request, abort
+from flask import render_template, url_for, flash, redirect, request, abort, Markup
 import os
 from tracker import app, db, bcrypt
 from tracker import mysql
@@ -35,24 +35,24 @@ def del_project(case):
 @login_required
 def project(case):
 
-    return render_template('project.html', title='Project')
+    return render_template('project.html', title='Project', case=case)
 
 
-@app.route('/upload', methods=["GET", "POST"])
-def upload():
+@app.route('/upload/<case>', methods=["GET", "POST"])
+def upload(case):
     if request.method == "POST":
         files = request.files.getlist('file')
         for file in files:
             if len(file.filename.strip()) == 0:
-                flash('no file selected', 'info')
-                return redirect(request.url)
+                flash(Markup('<strong>Warning!</strong>  No file selected'), 'warning')
+                return redirect(url_for('project', case=case))
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
         flash('file(s) uploaded successfully', 'success')
-        return 'gracias!'
+        return redirect(url_for('project', case=case))
 
     else:
-        return render_template('projects.html')
+        return redirect(url_for('project', case=case))
 
 
 @app.route("/register", methods=["GET", "POST"])
