@@ -23,8 +23,22 @@
     <input type="file" name="file" multiple>
     <input type="submit" value="upload">
 </form>
-
 </div>
+
+<br><br>
+<di>
+    <form method="POST" action="/assign">
+        <select name="user">
+            {% for email, user in users.items() %}
+            <option value="{{email}}">{{user}}</option>
+            {% endfor %}
+
+        </select>
+        <input type="hidden" value="{{ case }}" name="case" />
+        <input type="submit" value="assign">
+
+    </form>
+</di>
 
 {% endblock %}
 

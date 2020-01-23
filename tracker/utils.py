@@ -1,4 +1,6 @@
 from pymongo import MongoClient
+import smtplib
+from email.message import EmailMessage
 from sshtunnel import SSHTunnelForwarder
 
 
@@ -81,22 +83,21 @@ def remove_project(case):
     # server.stop()
 
 
-def send_email():
-    import smtplib
-    from email.mime.text import MIMEText
-    from email.mime.multipart import MIMEMultipart
-    address_book = ['ibafumba@digonex.com']
-    msg = MIMEMultipart()
-    sender = 'me@company.com'
-    subject = "My subject"
-    body = "This is my email body"
-    msg['From'] = sender
-    msg['To'] = ','.join(address_book)
-    msg['Subject'] = subject
-    msg.attach(MIMEText(body, 'plain'))
-    text = msg.as_string()
-    s = smtplib.SMTP('smtp.gmail.com')
-    s.sendmail(sender, address_book, text)
-    s.quit()
+def send_email(receiver, case_no):
+    try:
+        msg = EmailMessage()
+        msg["subject"] = 'Assignment for Project'
+        msg['From'] = 'mbolokwa@gmail.com'
+        msg['To'] = receiver
+        msg.set_content(f'You have been assigned project {case_no}')
+        with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
+                smtp.login('mbolokwa@gmail.com', 'johanna@14')
+                smtp.send_message(msg)
+        return True
+    except:
+        return False
+
+
+
 
 

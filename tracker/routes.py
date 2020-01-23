@@ -1,13 +1,13 @@
-from flask import render_template, url_for, flash, redirect, request, abort, Markup
 import os
-from tracker import app, db, bcrypt
-from tracker import mysql
-from tracker.forms import *
-from tracker.utils import *
-from tracker.models import Employee, User, Project
+
+from flask import render_template, url_for, flash, redirect, request, Markup
 from flask_login import login_user, current_user, logout_user, login_required
 from werkzeug.utils import secure_filename
 
+from tracker import app, db, bcrypt
+from tracker.forms import *
+from tracker.models import User
+from tracker.utils import *
 
 
 @app.route("/")
@@ -25,8 +25,6 @@ def projects():
 
 @app.route('/del_project/<case>')
 def del_project(case):
-    # db.session.query(Project).filter(Project.id == index).delete()
-    # db.session.commit()
     remove_project(case)
     return redirect(url_for('projects'))
 
@@ -34,8 +32,9 @@ def del_project(case):
 @app.route('/project/<case>')
 @login_required
 def project(case):
-
-    return render_template('project.html', title='Project', case=case)
+    users = {"ibobafumba@gmail.com": "Ibo Bafumba", "horimbere86@yahoo.fr": "Briella Horimbere",
+             "gabriel@gmail": "Gabriel Bafumba", "jojo@gmail.com": "Johanna Bafumba"}
+    return render_template('project.html', title='Project', case=case, users=users)
 
 
 @app.route('/upload/<case>', methods=["GET", "POST"])
@@ -128,3 +127,16 @@ def logout():
 @app.route('/account')
 def account():
     return render_template('account.html', title='Account')
+
+
+@app.route('/assign',  methods=["GET", "POST"])
+@login_required
+def assign():
+    if request.method == "POST":
+        email_receiver = request.form['user']
+        case = request.form['case']
+        if send_email(email_receiver, case) :
+            flash(Markup("<strong>Success!</strong> email sent."), 'success')
+        else:
+            flash(Markup("<strong>Success!</strong> email sent."), 'success')
+    return redirect(url_for('project', case=case))
