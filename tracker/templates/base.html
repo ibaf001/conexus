@@ -26,7 +26,15 @@
                 <div class="navbar-nav mr-auto">
                     <a class="nav-item nav-link" href="{{ url_for('home') }}">Home</a>
                     <a class="nav-item nav-link" href="{{ url_for('account') }}">Account</a>
-                    <a class="nav-item nav-link" href="{{ url_for('services') }}">Services</a>
+
+                    <div class="btn-group">
+                        <div class="nav-item nav-link dropdown-toggle" data-toggle="dropdown">Services</div>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="{{ url_for('services') }}">Service 1</a>
+                            <a class="dropdown-item" href="#">Service 2</a>
+                        </div>
+                    </div>
+
                 </div>
                 <!-- Navbar Right Side -->
                 <div class="navbar-nav">
