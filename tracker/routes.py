@@ -33,7 +33,8 @@ def del_project(case):
 @login_required
 def project(case):
     users = {"ibobafumba@gmail.com": "Ibo Bafumba", "horimbere86@yahoo.fr": "Briella Horimbere",
-             "gabriel@gmail": "Gabriel Bafumba", "jojo@gmail.com": "Johanna Bafumba"}
+             "gabriel@gmail": "Gabriel Bafumba", "jojo@gmail.com": "Johanna Bafumba",
+             "blaise.mpinga@ocmgroups.com": "Blaise Mpinga"}
     return render_template('project.html', title='Project', case=case, users=users)
 
 
