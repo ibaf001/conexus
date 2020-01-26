@@ -3,7 +3,7 @@ import os
 from flask import render_template, url_for, flash, redirect, request, Markup
 from flask_login import login_user, current_user, logout_user, login_required
 from werkzeug.utils import secure_filename
-
+from datetime import datetime
 from tracker import app, db, bcrypt
 from tracker.forms import *
 from tracker.models import User
@@ -124,6 +124,7 @@ def add_project(name):
                 obj[field.label.text] = field.data
         obj['user_id'] = current_user.id
         obj['client'] = name
+        obj['created_at'] = datetime.utcnow()
         save_project(obj)
         flash('project created successfully', 'success')
         return render_template("add_project.html", form=form, clients=clients, selected=name)
