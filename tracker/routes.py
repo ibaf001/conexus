@@ -16,12 +16,21 @@ def home():
     return render_template('home.html')
 
 
-@app.route('/projects')
+@app.route('/projects', defaults={'page': 1})
+@app.route('/projects/<int:page>')
 @login_required
-def projects():
+def projects(page):
     all_projects = retrieve_project_by_id(current_user.id)
-    print(all_projects)
-    return render_template('projects.html', title='All Projects', all_projects=all_projects)
+    num_rows = 5
+    print(page)
+    start = _get_page_limits(page, num_rows)
+    all_projects = all_projects[start:(start+num_rows)]
+    return render_template('projects.html', title='All Projects', all_projects=all_projects,
+                           page=page)
+
+
+def _get_page_limits(page, num_rows):
+    return (page - 1) * num_rows
 
 
 @app.route('/del_project/<case>')
