@@ -130,14 +130,24 @@ def account():
     return render_template('account.html', title='Account')
 
 
-@app.route('/assign',  methods=["GET", "POST"])
+@app.route('/assign', methods=["GET", "POST"])
 @login_required
 def assign():
     if request.method == "POST":
         email_receiver = request.form['user']
         case = request.form['case']
-        if send_email(email_receiver, case) :
+        if send_email(email_receiver, case):
             flash(Markup("<strong>Success!</strong> email sent."), 'success')
         else:
             flash(Markup("<strong>Success!</strong> email sent."), 'success')
     return redirect(url_for('project', case=case))
+
+
+@app.route('/services')
+def services():
+    return render_template('services.html')
+
+
+@app.route('/careers')
+def careers():
+    return render_template('careers.html')
