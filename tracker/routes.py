@@ -20,6 +20,7 @@ def home():
 @login_required
 def projects():
     all_projects = retrieve_project_by_id(current_user.id)
+    print(all_projects)
     return render_template('projects.html', title='All Projects', all_projects=all_projects)
 
 

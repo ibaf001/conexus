@@ -21,7 +21,7 @@
 <div>
 <form id="upload-form" action="{{ url_for('upload', case=case) }}" method="post" enctype="multipart/form-data">
     <input type="file" name="file" multiple>
-    <input type="submit" value="upload">
+    <input type="submit" value="upload" class="btn btn-success">
 </form>
 </div>
 
@@ -35,7 +35,7 @@
 
         </select>
         <input type="hidden" value="{{ case }}" name="case" />
-        <input type="submit" value="assign">
+        <input type="submit" value="assign" class="btn btn-info">
 
     </form>
 </di>
