@@ -21,17 +21,18 @@ def home():
 @login_required
 def projects(page):
     all_projects = retrieve_project_by_id(current_user.id)
-    num_rows = 5
-    print(page)
-    start = _get_page_limits(page, num_rows)
+    num_rows = 3
+    start, begin, end = _get_page_limits(page, num_rows, len(all_projects))
     all_projects = all_projects[start:(start+num_rows)]
-    return render_template('projects.html', title='All Projects', all_projects=all_projects,
-                           page=page)
+    return render_template('projects.html', title='All Projects', all_projects=all_projects,begin=begin,
+                           end=end, page=page)
 
 
-def _get_page_limits(page, num_rows):
-    return (page - 1) * num_rows
-
+def _get_page_limits(page, num_rows, size):
+    start = (page - 1) * num_rows
+    end = (size // num_rows) if (size % num_rows == 0) else ((size // num_rows)+1)
+    begin = (end - 2) if (end == page) else page
+    return start, begin, end
 
 @app.route('/del_project/<case>')
 def del_project(case):
