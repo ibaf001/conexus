@@ -1,6 +1,7 @@
 import json
 from datetime import datetime
-from tracker import db, login_manager
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+from tracker import db, login_manager, app
 from flask_login import UserMixin
 
 
@@ -25,23 +26,27 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(120), unique=True, nullable=False)
     image_file = db.Column(db.String(20), nullable=False, default='default.jpg')
     password = db.Column(db.String(60), nullable=False)
-    projects = db.relationship('Project', backref='user', lazy=True)
+    # projects = db.relationship('Project', backref='user', lazy=True)
+
+    def get_reset_token(self, expires_sec=1800):
+        s = Serializer(app.config['SECRET_KEY'], expires_sec)
+        return s.dumps({'user_id': self.id}).decode('utf-8')
 
     def __repr__(self):
         return f"User('{self.username}', '{self.email}', '{self.image_file}')"
 
 
 
-class Project(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    code = db.Column(db.String(10), unique=True, nullable=False)
-    date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    client = db.Column(db.String(10), nullable=False)
-    county = db.Column(db.String(10), nullable=False)
-    municipality = db.Column(db.String(10), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-
-    def __repr__(self):
-        return f"Project('{self.client}', '{self.code}')"
+# class Project(db.Model):
+#     id = db.Column(db.Integer, primary_key=True)
+#     code = db.Column(db.String(10), unique=True, nullable=False)
+#     date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+#     client = db.Column(db.String(10), nullable=False)
+#     county = db.Column(db.String(10), nullable=False)
+#     municipality = db.Column(db.String(10), nullable=False)
+#     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+#
+#     def __repr__(self):
+#         return f"Project('{self.client}', '{self.code}')"
 
 
