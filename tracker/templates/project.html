@@ -2,27 +2,40 @@
 {% block title %} All Projects {% endblock %}
 {% block content %}
 
-<h2>Project Details</h2>
-<table style="width:50%">
-    <tr>
-        <th></th>
-        <th></th>
-    </tr>
-    <tr>
-        <td><b>Name</b></td>
-        <td>4444</td>
-    </tr>
-    <tr>
-        <td><b>Case</b></td>
-        <td>{{ case }}</td>
-    </tr>
-</table>
-<br>
-<div>
-<form id="upload-form" action="{{ url_for('upload', case=case) }}" method="post" enctype="multipart/form-data">
-    <input type="file" name="file" multiple>
-    <input type="submit" value="upload" class="btn btn-success">
-</form>
+<div class="container">
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">Project Details</h4>
+            <h6 class="card-subtitle">Assigned To: {{ proj['assignee'] }}</h6>
+            <br>
+            <table style="width:50%">
+                <tr>
+                    <th></th>
+                    <th></th>
+                </tr>
+                <tr>
+                    <td><b>Project #</b></td>
+                    <td>{{ proj['Project #'] }}</td>
+                </tr>
+                <tr>
+                    <td><b>County</b></td>
+                    <td>{{ proj['County'] }}</td>
+                </tr>
+                <tr>
+                    <td><b>City</b></td>
+                    <td>{{ proj['City'] }}</td>
+                </tr>
+            </table>
+            <br>
+            <div>
+                <form id="upload-form" action="{{ url_for('upload', case=case) }}" method="post"
+                      enctype="multipart/form-data">
+                    <input type="file" name="file" multiple>
+                    <input type="submit" value="upload" class="btn btn-success">
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 
 <br><br>

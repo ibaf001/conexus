@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, SelectField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, SelectField, TextAreaField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
 from tracker.models import User
 
@@ -40,39 +40,41 @@ class ProjectForm(FlaskForm):
 
 # forms used for projects
 class DukeForm(FlaskForm):
-    case = StringField('case', validators=[DataRequired()], default='DUKE001')
-    name = StringField('name', validators=[DataRequired()])
-    email = StringField('email', validators=[DataRequired()])
+    project_id = StringField('Project #', validators=[DataRequired()], default='DUKE001')
+    county = StringField('County', validators=[DataRequired()])
+    city = StringField('City', validators=[DataRequired()])
+    notes = TextAreaField('Notes')
     #assignee = SelectField(u'assignee', choices=['Ibo', 'Briella'])
 
     submit = SubmitField('Add')
 
 
 class IPLForm(FlaskForm):
-    case = StringField('case', validators=[DataRequired()], default='IPL555', render_kw={'readonly': True})
-    name = StringField('name', validators=[DataRequired()])
-    email = StringField('email', validators=[DataRequired(), Email()])
+    project_id = StringField('Project #', validators=[DataRequired()], default='IPL555', render_kw={'readonly': True})
+    county = StringField('County', validators=[DataRequired()])
+    city = StringField('City', validators=[DataRequired()])
     address = StringField('address', validators=[DataRequired()])
-
+    notes = TextAreaField('Notes')
     submit = SubmitField('Add')
 
 
 class ComcastForm(FlaskForm):
-    case = StringField('case', validators=[DataRequired()])
-    name = StringField('name', validators=[DataRequired()])
-    email = StringField('email', validators=[DataRequired()])
+    project_id = StringField('Project #', validators=[DataRequired()])
+    county = StringField('County', validators=[DataRequired()])
+    city = StringField('City', validators=[DataRequired()])
     address = StringField('address', validators=[DataRequired()])
-    city = StringField('city', validators=[DataRequired()])
     state = StringField('state', validators=[DataRequired()])
-
+    notes = TextAreaField('Notes')
     submit = SubmitField('Add')
 
 
 class CitizenForm(FlaskForm):
-    case = StringField('case', validators=[DataRequired(), Length(min=2, max=18)])
-    name = StringField('name', validators=[DataRequired()])
-    email = StringField('email', validators=[DataRequired()])
-    county = StringField('county', validators=[DataRequired()])
+    project_id = StringField('Project #', validators=[DataRequired(), Length(min=2, max=18)])
+    county = StringField('County', validators=[DataRequired()])
+    city = StringField('City', validators=[DataRequired()])
     sector = StringField('sector', validators=[DataRequired()])
-
+    notes = TextAreaField('Notes')
     submit = SubmitField('Add')
+
+
+

@@ -20,7 +20,8 @@ def home():
 @app.route('/projects/<int:page>')
 @login_required
 def projects(page):
-    all_projects = retrieve_project_by_id(current_user.id)
+    all_projects = retrieve_project_by_id(current_user.email)
+    print(all_projects)
     num_rows = 3
     start, begin, end = _get_page_limits(page, num_rows, len(all_projects))
     all_projects = all_projects[start:(start+num_rows)]
@@ -46,7 +47,8 @@ def project(case):
     users = {"ibobafumba@gmail.com": "Ibo Bafumba", "horimbere86@yahoo.fr": "Briella Horimbere",
              "gabriel@gmail": "Gabriel Bafumba", "jojo@gmail.com": "Johanna Bafumba",
              "blaise.mpinga@ocmgroups.com": "Blaise Mpinga"}
-    return render_template('project.html', title='Project', case=case, users=users)
+    proj = get_projects_by_project_number(case)
+    return render_template('project.html', title='Project', case=case, users=users, proj=proj)
 
 
 @app.route('/upload/<case>', methods=["GET", "POST"])
@@ -122,9 +124,9 @@ def add_project(name):
         for field in form:
             if field.name not in ('csrf_token', 'submit'):
                 obj[field.label.text] = field.data
-        obj['user_id'] = current_user.id
+        obj['user_id'] = current_user.email
         obj['client'] = name
-        obj['created_at'] = datetime.utcnow()
+        obj['created_at'] = datetime.utcnow()  # TODO change to local time
         save_project(obj)
         flash('project created successfully', 'success')
         return render_template("add_project.html", form=form, clients=clients, selected=name)
@@ -147,12 +149,15 @@ def account():
 def assign():
     if request.method == "POST":
         email_receiver = request.form['user']
-        case = request.form['case']
-        if send_email(email_receiver, case):
+        project_id = request.form['case']
+        proj = get_projects_by_project_number(project_id)
+        proj['assignee'] = email_receiver
+        save_project(proj)
+        if send_email(email_receiver, project_id):
             flash(Markup("<strong>Success!</strong> email sent."), 'success')
         else:
             flash(Markup("<strong>Success!</strong> email sent."), 'success')
-    return redirect(url_for('project', case=case))
+    return redirect(url_for('project', case=project_id))
 
 
 @app.route('/services')
