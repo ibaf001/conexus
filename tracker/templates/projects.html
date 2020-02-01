@@ -2,7 +2,7 @@
 {% block title %} All Projects {% endblock %}
 {% block content %}
 
-<a href="{{ url_for('add_project') }}"> <button class="btn btn-info">Add Project</button></a>
+<a href="{{ url_for('projects.add_project') }}"> <button class="btn btn-info">Add Project</button></a>
 <br><br>
 <table class="table table-dark table-bordered" >
     <tr>
@@ -13,9 +13,9 @@
     {% for project in all_projects %}
     <tr>
         <td>{{ project['client'] }}</td>
-        <td><a href="{{ url_for('project', case=project['Project #']) }}"> {{ project['Project #'] }}</a></td>
+        <td><a href="{{ url_for('projects.project', case=project['Project #']) }}"> {{ project['Project #'] }}</a></td>
         <td> {{ project['created_at'].strftime('%m/%d/%Y %H:%M:%S') }}</td>
-        <td><a href="{{ url_for('del_project', case=project['case'])}}"> delete</a>   <!--  del_project/case -->
+        <td><a href="{{ url_for('projects.del_project', case=project['case'])}}"> delete</a>   <!--  del_project/case -->
         </td>
     </tr>
     {% endfor %}
@@ -24,15 +24,15 @@
        <div>
             <nav arial-label="Chapter Links">
                 <ul class="pagination justify-content-end">
-                    <li  class="page-item {% if page == 1 %} disabled {% endif %}"><a class="page-link" href="{{ url_for('projects', page=(page-1)) }}" aria-label="Previous">
+                    <li  class="page-item {% if page == 1 %} disabled {% endif %}"><a class="page-link" href="{{ url_for('projects.get_projects', page=(page-1)) }}" aria-label="Previous">
                         <span aria-hidden="true">&laquo;</span>
                         <span class="sr-only">Previous</span>
                     </a></li>
 
                     {% for i in range(begin,end+1, 1) %}
-                    <li class="page-item {% if page == i %} active {% endif %}"><a class="page-link" href="{{ url_for('projects', page=i) }}">{{ i }}</a></li>
+                    <li class="page-item {% if page == i %} active {% endif %}"><a class="page-link" href="{{ url_for('projects.get_projects', page=i) }}">{{ i }}</a></li>
                     {% endfor %}
-                    <li class="page-item {% if (begin+2) == end %} disabled {% endif %}"><a class="page-link" href="{{ url_for('projects', page=(page+1)) }}" aria-label="Next">
+                    <li class="page-item {% if (begin+2) == end %} disabled {% endif %}"><a class="page-link" href="{{ url_for('projects.get_projects', page=(page+1)) }}" aria-label="Next">
                         <span aria-hidden="true">&raquo;</span>
                         <span class="sr-only">Next</span>
                     </a></li>

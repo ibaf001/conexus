@@ -28,7 +28,7 @@
             </table>
             <br>
             <div>
-                <form id="upload-form" action="{{ url_for('upload', case=case) }}" method="post"
+                <form id="upload-form" action="{{ url_for('main.upload', case=case) }}" method="post"
                       enctype="multipart/form-data">
                     <input type="file" name="file" multiple>
                     <input type="submit" value="upload" class="btn btn-success">
