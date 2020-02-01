@@ -12,9 +12,6 @@ class Employee:
         self.code = code
 
 
-
-
-
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
@@ -26,16 +23,24 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(120), unique=True, nullable=False)
     image_file = db.Column(db.String(20), nullable=False, default='default.jpg')
     password = db.Column(db.String(60), nullable=False)
+
     # projects = db.relationship('Project', backref='user', lazy=True)
 
     def get_reset_token(self, expires_sec=1800):
         s = Serializer(app.config['SECRET_KEY'], expires_sec)
         return s.dumps({'user_id': self.id}).decode('utf-8')
 
+    @staticmethod
+    def verify_reset_token(token):
+        s = Serializer(app.config['SECRET_KEY'])
+        try:
+            user_id = s.loads(token)['user_id']
+        except:
+            return None
+        return User.query.get(user_id)
+
     def __repr__(self):
         return f"User('{self.username}', '{self.email}', '{self.image_file}')"
-
-
 
 # class Project(db.Model):
 #     id = db.Column(db.Integer, primary_key=True)
@@ -48,5 +53,3 @@ class User(db.Model, UserMixin):
 #
 #     def __repr__(self):
 #         return f"Project('{self.client}', '{self.code}')"
-
-
