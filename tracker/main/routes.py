@@ -1,10 +1,10 @@
 import os
 from flask import Blueprint
-
+from flask import current_app
 from flask import render_template, url_for, flash, redirect, request, Markup
 from werkzeug.utils import secure_filename
 
-from tracker import app
+
 main = Blueprint('main', __name__)
 
 
@@ -23,7 +23,7 @@ def upload(case):
                 flash(Markup('<strong>Warning!</strong>  No file selected'), 'warning')
                 return redirect(url_for('projects.project', case=case))
             filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
         flash('file(s) uploaded successfully', 'success')
         return redirect(url_for('projects.project', case=case))
 
