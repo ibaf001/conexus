@@ -36,7 +36,9 @@ mail = Mail(app)
 from tracker.users.routes import users
 from tracker.projects.routes import projects
 from tracker.main.routes import main
+from tracker.errors.handlers import errors
 
 app.register_blueprint(users)
 app.register_blueprint(projects)
 app.register_blueprint(main)
+app.register_blueprint(errors)
