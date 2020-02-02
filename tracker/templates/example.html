@@ -17,15 +17,16 @@
     {{ form.hidden_tag() }}
 
         {% for field in form if field.widget.input_type != 'hidden' %}
-        <div class="form-group">
 
             {% if field.type != 'SubmitField' %}
+            <div class="form-group">
                 {{ field.label(class="form-control-label") }}
                 {{ field(class="form-control  form-control-lg") }}
+             </div>
             {% else %}
-                {{ field(class="btn btn-outline-info") }}
+                {{ field(class="btn btn-success") }}
             {% endif %}
-        </div>
+
         {% endfor %}
 
 </form>
