@@ -7,7 +7,7 @@ from wtforms import StringField, PasswordField, SubmitField, BooleanField, Selec
 from wtforms.validators import DataRequired
 
 from tracker.projects.forms import (DukeForm, IPLForm, ComcastForm, CitizenForm, ClientForm)
-from tracker.projects.utils import *
+from tracker.projects import utils
 
 projects = Blueprint('projects', __name__)
 
@@ -16,8 +16,7 @@ projects = Blueprint('projects', __name__)
 @projects.route('/projects/<int:page>')
 @login_required
 def get_projects(page):
-    all_projects = retrieve_project_by_id(current_user.email)
-    print(all_projects)
+    all_projects = utils.retrieve_project_by_id(current_user.email)
     num_rows = 3
     start, begin, end = _get_page_limits(page, num_rows, len(all_projects))
     all_projects = all_projects[start:(start + num_rows)]
@@ -35,7 +34,7 @@ def _get_page_limits(page, num_rows, size):
 @projects.route('/del_project/<case>')
 @login_required
 def del_project(case):
-    remove_project(case)
+    utils.remove_project(case)
     return redirect(url_for('projects.get_projects'))
 
 
@@ -45,7 +44,7 @@ def project(case):
     users = {"ibobafumba@gmail.com": "Ibo Bafumba", "horimbere86@yahoo.fr": "Briella Horimbere",
              "gabriel@gmail": "Gabriel Bafumba", "jojo@gmail.com": "Johanna Bafumba",
              "blaise.mpinga@ocmgroups.com": "Blaise Mpinga"}
-    proj = get_projects_by_project_number(case)
+    proj = utils.get_projects_by_project_number(case)
     return render_template('project.html', title='Project', case=case, users=users, proj=proj)
 
 
@@ -77,7 +76,7 @@ def add_project(name):
         obj['user_id'] = current_user.email
         obj['client'] = name
         obj['created_at'] = datetime.utcnow()  # TODO change to local time
-        save_project(obj)
+        utils.save_project(obj)
         flash('project created successfully', 'success')
         return render_template("add_project.html", form=form, clients=clients, selected=name)
     return render_template("add_project.html", form=form, clients=clients, selected=name)
@@ -89,32 +88,36 @@ def assign():
     if request.method == "POST":
         email_receiver = request.form['user']
         project_id = request.form['case']
-        proj = get_projects_by_project_number(project_id)
+        proj = utils.get_projects_by_project_number(project_id)
         proj['assignee'] = email_receiver
-        save_project(proj)
-        if send_email(email_receiver, project_id):
+        utils.save_project(proj)
+        if utils.send_email(email_receiver, project_id):
             flash(Markup("<strong>Success!</strong> email sent."), 'success')
         else:
             flash(Markup("<strong>Success!</strong> email sent."), 'success')
     return redirect(url_for('projects.project', case=project_id))
 
 
-@projects.route('/example', methods=["GET", "POST"])
-def example():
-    clients = ['Duke', 'IPL', 'Comcast', 'Citizen']
-    record = {'project': ['stringfield','project', False, ''],
-              'county': ['stringfield', 'county', True, ''],
-              'status': ['selectfield','status', True,'started-In progress-completed'],
-              'City': ['stringfield','city', True, 'Indianapolis'],
-              'Notes': ['textareafield','notes', False,'']}
+@projects.route("/example/", defaults={'name': 'Duke'}, methods=["GET", "POST"])
+@projects.route("/example/<name>", methods=["GET", "POST"])
+def example(name):
+    clients = utils.get_clients()
+    record = utils.get_client_by_id(name)['fields']
     form = ClientForm()
     for key, value in record.items():
         setattr(ClientForm, key, get_client_form(value))
     setattr(ClientForm, 'submit', SubmitField('submit'))
     if form.validate_on_submit():
         # print(dict(form.status.choices).get(form.status.data))  todo how to get value for selection
-        return 'form is submitted- county is: ' + str(form.county.data)
-    return render_template('example.html', clients=clients, form=form)
+        print('========================= **** ===============')
+        for field in form:
+            print('name : '+ field.name)
+            print('description :'+field.description)
+            print('label.text : '+field.label.text)
+            print('data : '+field.data)
+        print('========================= **** ===============')
+        return 'form is submitted successfully'
+    return render_template('example.html', clients=clients, form=form, selected=name)
 
 
 def is_required(data):

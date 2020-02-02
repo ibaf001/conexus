@@ -52,6 +52,26 @@ def get_projects_by_project_number(project_number):
     return result
 
 
+def get_client_by_id(id):
+    client = MongoClient('127.0.0.1', 27017)
+    db = client['ocm']
+    result = db.clients.find_one({"_id": id})
+    client.close()
+    return result
+
+def get_clients():
+    client = MongoClient('127.0.0.1', 27017)
+    db = client['ocm']
+    results = db.clients.find({})
+    lst = []
+    for r in results:
+        lst.append(r['_id'])
+    return lst
+
+
+
+
+
 def send_email(receiver, case_no):
     try:
         msg = EmailMessage()
