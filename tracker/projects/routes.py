@@ -3,8 +3,10 @@ from datetime import datetime
 from flask import Blueprint
 from flask import render_template, url_for, flash, redirect, request, Markup
 from flask_login import current_user, login_required
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, SelectField, TextAreaField
+from wtforms.validators import DataRequired
 
-from tracker.projects.forms import *
+from tracker.projects.forms import (DukeForm, IPLForm, ComcastForm, CitizenForm, ClientForm)
 from tracker.projects.utils import *
 
 projects = Blueprint('projects', __name__)
@@ -95,3 +97,50 @@ def assign():
         else:
             flash(Markup("<strong>Success!</strong> email sent."), 'success')
     return redirect(url_for('projects.project', case=project_id))
+
+
+@projects.route('/example', methods=["GET", "POST"])
+def example():
+    clients = ['Duke', 'IPL', 'Comcast', 'Citizen']
+    record = {'project': ['stringfield','project', False, ''],
+              'county': ['stringfield', 'county', True, ''],
+              'status': ['selectfield','status', True,'started-In progress-completed'],
+              'City': ['stringfield','city', True, 'Indianapolis'],
+              'Notes': ['textareafield','notes', False,'']}
+    form = ClientForm()
+    for key, value in record.items():
+        setattr(ClientForm, key, get_client_form(value))
+    setattr(ClientForm, 'submit', SubmitField('submit'))
+    if form.validate_on_submit():
+        # print(dict(form.status.choices).get(form.status.data))  todo how to get value for selection
+        return 'form is submitted- county is: ' + str(form.county.data)
+    return render_template('example.html', clients=clients, form=form)
+
+
+def is_required(data):
+    v = []
+    if data:
+        v.append(DataRequired())
+    return v
+
+
+def build_choices(entries):
+    d = entries.split('-')
+    dd = []
+    for option in d:
+        dd.append((''.join(option.split()), option))
+    return dd
+
+
+def get_client_form(data):
+    if data[0].lower() == 'stringfield':
+        return StringField(data[1], validators=is_required(data[2]), default=data[3])
+    elif data[0].lower() == 'textareafield':
+        return TextAreaField(data[1])
+    elif data[0].lower() == 'selectfield':
+        return SelectField(data[1], choices=build_choices(data[3]))
+    else:
+        return StringField(data[1], validators=is_required(data[2]), default=data[3])
+
+
+

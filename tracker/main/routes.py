@@ -1,9 +1,9 @@
 import os
+
 from flask import Blueprint
 from flask import current_app
 from flask import render_template, url_for, flash, redirect, request, Markup
 from werkzeug.utils import secure_filename
-
 
 main = Blueprint('main', __name__)
 
@@ -44,3 +44,6 @@ def services():
 @main.route('/careers')
 def careers():
     return render_template('careers.html')
+
+
+

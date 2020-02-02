@@ -3,6 +3,10 @@ from wtforms import StringField, PasswordField, SubmitField, BooleanField, Selec
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
 
 
+class ClientForm(FlaskForm):
+    pass
+
+
 class ProjectForm(FlaskForm):
     code = StringField('Code', validators=[DataRequired()])
     client = StringField('Client', validators=[DataRequired()])
@@ -17,6 +21,8 @@ class DukeForm(FlaskForm):
     project_id = StringField('Project #', validators=[DataRequired()], default='DUKE001')
     county = StringField('County', validators=[DataRequired()])
     city = StringField('City', validators=[DataRequired()])
+    language = SelectField('Programming Language', choices=[('cpp', 'C++'), ('py', 'Python'), ('text', 'Plain Text')])
+
     notes = TextAreaField('Notes')
     # assignee = SelectField(u'assignee', choices=['Ibo', 'Briella'])
 
@@ -28,7 +34,7 @@ class IPLForm(FlaskForm):
     county = StringField('County', validators=[DataRequired()])
     city = StringField('City', validators=[DataRequired()])
     address = StringField('address', validators=[DataRequired()])
-    notes = TextAreaField('Notes')
+    notes = TextAreaField('Notes', validators=[DataRequired()])
     submit = SubmitField('Add')
 
 
