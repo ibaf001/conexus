@@ -1,10 +1,11 @@
 from datetime import datetime
-
+import pandas as pd
 from flask import Blueprint
 from flask import render_template, url_for, flash, redirect, request, Markup
 from flask_login import current_user, login_required
 from wtforms import StringField, PasswordField, SubmitField, BooleanField, SelectField, TextAreaField
 from wtforms.validators import DataRequired
+from werkzeug.utils import secure_filename
 
 from tracker.projects.forms import (DukeForm, IPLForm, ComcastForm, CitizenForm, ClientForm)
 from tracker.projects import utils
@@ -20,8 +21,9 @@ def get_projects(page):
     num_rows = 3
     start, begin, end = _get_page_limits(page, num_rows, len(all_projects))
     all_projects = all_projects[start:(start + num_rows)]
+    pcount = utils.get_projects_count()
     return render_template('projects.html', title='All Projects', all_projects=all_projects, begin=begin,
-                           end=end, page=page)
+                           end=end, page=page, pcount=pcount)
 
 
 def _get_page_limits(page, num_rows, size):
@@ -82,6 +84,40 @@ def add_project(name):
     return render_template("add_project.html", form=form, clients=clients, selected=name)
 
 
+@projects.route("/add_client", methods=["GET", "POST"])
+@login_required
+def add_client():
+    if request.method == "POST":
+        files = request.files.getlist('file')
+        for file in files:
+            if len(file.filename.strip()) == 0:
+                flash(Markup('<strong>Warning!</strong>  No file selected'), 'warning')
+                return 'no file .......'
+            df = pd.read_csv(file)
+            print(df.head())
+            return 'you sent : '
+    return 'success'
+
+
+
+# @main.route('/upload/<case>', methods=["GET", "POST"])
+# def upload(case):
+#     if request.method == "POST":
+#         files = request.files.getlist('file')
+#         for file in files:
+#             if len(file.filename.strip()) == 0:
+#                 flash(Markup('<strong>Warning!</strong>  No file selected'), 'warning')
+#                 return redirect(url_for('projects.project', case=case))
+#             filename = secure_filename(file.filename)
+#             file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
+#         flash('file(s) uploaded successfully', 'success')
+#         return redirect(url_for('projects.project', case=case))
+#
+#     else:
+#         return redirect(url_for('projects.project', case=case))
+
+
+
 @projects.route('/assign', methods=["GET", "POST"])
 @login_required
 def assign():
@@ -108,15 +144,18 @@ def example(name):
         setattr(ClientForm, key, get_client_form(value))
     setattr(ClientForm, 'submit', SubmitField('submit'))
     if form.validate_on_submit():
-        # print(dict(form.status.choices).get(form.status.data))  todo how to get value for selection
-        print('========================= **** ===============')
+        pj = {}
         for field in form:
-            print('name : '+ field.name)
-            print('description :'+field.description)
-            print('label.text : '+field.label.text)
-            print('data : '+field.data)
-        print('========================= **** ===============')
-        return 'form is submitted successfully'
+            if field.name not in ('csrf_token', 'submit'):
+                pj[field.name] = str(field.data)
+        if len(pj) != 0:
+            pj['user_id'] = current_user.email
+            pj['client'] = name
+            pj['created_at'] = datetime.now()  # TODO change to local time
+            utils.save_project(pj)
+            flash('project created successfully', 'success')
+
+        return render_template("example.html", form=form, clients=clients, selected=name)
     return render_template('example.html', clients=clients, form=form, selected=name)
 
 
@@ -131,7 +170,7 @@ def build_choices(entries):
     d = entries.split('-')
     dd = []
     for option in d:
-        dd.append((''.join(option.split()), option))
+        dd.append((option, option))
     return dd
 
 

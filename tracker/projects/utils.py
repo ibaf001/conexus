@@ -47,7 +47,7 @@ def remove_project(case):
 def get_projects_by_project_number(project_number):
     client = MongoClient('127.0.0.1', 27017)
     db = client['ocm']
-    result = db.projects.find_one({"Project #": project_number})
+    result = db.projects.find_one({"project": project_number})
     client.close()
     return result
 
@@ -69,7 +69,17 @@ def get_clients():
     return lst
 
 
-
+def get_projects_count():
+    client = MongoClient('127.0.0.1', 27017)
+    db = client['ocm']
+    results = db.projects.find({})
+    d = {}
+    for r in results:
+        if r['client'] not in d:
+            d[r['client']] = 1
+        else:
+            d[r['client']] += 1
+    return d
 
 
 def send_email(receiver, case_no):
