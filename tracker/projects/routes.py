@@ -93,12 +93,25 @@ def add_client():
             if len(file.filename.strip()) == 0:
                 flash(Markup('<strong>Warning!</strong>  No file selected'), 'warning')
                 return 'no file .......'
+            if not utils.is_csv_file(file.filename):
+                flash('Please select a .csv file', 'warning')
+                return 'not a csv file'
             df = pd.read_csv(file)
-            print(df.head())
-            return 'you sent : '
+            print(utils.create_fields(df))
+            client_obj = {'_id': utils.get_csv_filename(file.filename), 'fields': utils.create_fields(df)}
+            #utils.save_client(client_obj)
+            return 'you sent : '+str(file.filename)
     return 'success'
 
 
+
+# record = {'project': ['stringfield', 'project', False, ''],
+#           'county': ['stringfield', 'county', True, ''],
+#           'address': ['stringfield', 'address', True, ''],
+#           'status': ['selectfield', 'status', True, 'started-In progress-completed'],
+#           'City': ['stringfield', 'city', True, 'Indianapolis'],
+#           'Notes': ['textareafield', 'notes', False, '']}
+# d = {'_id':'Duke', 'fields': record}
 
 # @main.route('/upload/<case>', methods=["GET", "POST"])
 # def upload(case):
@@ -155,8 +168,20 @@ def example(name):
             utils.save_project(pj)
             flash('project created successfully', 'success')
 
-        return render_template("example.html", form=form, clients=clients, selected=name)
+        return redirect(url_for('example', form=form, clients=clients, selected=name))
     return render_template('example.html', clients=clients, form=form, selected=name)
+
+
+@projects.route('/projects_by_client/<client_name>')
+@login_required
+def projects_by_client(client_name):
+    all_projects = utils.get_projects_for(client_name)
+    num_rows = 3
+    start, begin, end = _get_page_limits(1, num_rows, len(all_projects))
+    all_projects = all_projects[start:(start + num_rows)]
+    pcount = utils.get_projects_count()       # todo need fixing
+    return render_template('projects.html', title='All Projects', all_projects=all_projects, begin=begin,
+                           end=end, page=1, pcount=pcount)
 
 
 def is_required(data):

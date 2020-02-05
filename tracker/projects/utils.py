@@ -59,6 +59,7 @@ def get_client_by_id(id):
     client.close()
     return result
 
+
 def get_clients():
     client = MongoClient('127.0.0.1', 27017)
     db = client['ocm']
@@ -66,7 +67,33 @@ def get_clients():
     lst = []
     for r in results:
         lst.append(r['_id'])
+    client.close()
     return lst
+
+
+def save_client(obj):
+    client = MongoClient('127.0.0.1', 27017)
+    db = client['ocm']
+    db.clients.save(obj)
+    client.close()
+
+
+def is_csv_file(filename):
+    return filename.split('.')[-1] == 'csv'
+
+
+def get_csv_filename(csvfile):
+    pos = csvfile.index('.')
+    return csvfile[0:pos]
+
+
+def create_fields(df):
+    df.fillna('', inplace=True)
+    d = dict()
+    for r in range(len(df)):
+        d[df.loc[r, 'field name']] = [df.loc[r, 'type'], df.loc[r, 'field name'], bool(df.loc[r, 'required']),
+                                      df.loc[r, 'values']]
+    return d
 
 
 def get_projects_count():
@@ -79,7 +106,19 @@ def get_projects_count():
             d[r['client']] = 1
         else:
             d[r['client']] += 1
+    client.close()
     return d
+
+
+def get_projects_for(client_name):
+    client = MongoClient('127.0.0.1', 27017)
+    db = client['ocm']
+    results = db.projects.find({'client': client_name})
+    r = list()
+    for proj in results:
+        r.append(proj)
+    client.close()
+    return r
 
 
 def send_email(receiver, case_no):
