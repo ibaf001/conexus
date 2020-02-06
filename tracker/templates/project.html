@@ -13,18 +13,16 @@
                     <th></th>
                     <th></th>
                 </tr>
+
+                {% for k, v in proj.items() %}
+                    {% if k != '_id' %}
                 <tr>
-                    <td><b>Project #</b></td>
-                    <td>{{ proj['Project #'] }}</td>
+                    <td><b>{{ k }}</b></td>
+                    <td>{{ v }}</td>
                 </tr>
-                <tr>
-                    <td><b>County</b></td>
-                    <td>{{ proj['County'] }}</td>
-                </tr>
-                <tr>
-                    <td><b>City</b></td>
-                    <td>{{ proj['City'] }}</td>
-                </tr>
+                    {% endif %}
+                {% endfor %}
+
             </table>
             <br>
             <div class="form-group">
