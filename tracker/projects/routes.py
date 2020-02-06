@@ -3,6 +3,7 @@ import pandas as pd
 from flask import Blueprint
 from flask import render_template, url_for, flash, redirect, request, Markup
 from flask_login import current_user, login_required
+from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField, SelectField, TextAreaField
 from wtforms.validators import DataRequired
 from werkzeug.utils import secure_filename
@@ -151,11 +152,7 @@ def assign():
 @projects.route("/example/<name>", methods=["GET", "POST"])
 def example(name):
     clients = utils.get_clients()
-    record = utils.get_client_by_id(name)['fields']
-    form = ClientForm()
-    for key, value in record.items():
-        setattr(ClientForm, key, get_client_form(value))
-    setattr(ClientForm, 'submit', SubmitField('submit'))
+    form = build_form(name)()
     if form.validate_on_submit():
         pj = {}
         for field in form:
@@ -168,8 +165,23 @@ def example(name):
             utils.save_project(pj)
             flash('project created successfully', 'success')
 
-        return redirect(url_for('example', form=form, clients=clients, selected=name))
+        return redirect(url_for('projects.example', form=form, clients=clients, selected=name))
     return render_template('example.html', clients=clients, form=form, selected=name)
+
+
+name_map = dict()
+
+
+def build_form(name):
+    if name not in name_map:
+        record = utils.get_client_by_id(name)['fields']
+        A = type(name, (FlaskForm,), {})
+        for key, value in record.items():
+            setattr(A, key, get_client_form(value))
+        setattr(A, 'submit', SubmitField('submit'))
+        name_map[name] = A
+        return A
+    return name_map[name]
 
 
 @projects.route('/projects_by_client/<client_name>')
