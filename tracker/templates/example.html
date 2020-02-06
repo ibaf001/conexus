@@ -4,7 +4,7 @@
 <div class="container">
     <div class="row">
         <div class="col-2"></div>
-        <div class="col-8">
+        <div class="col-6">
 
 <select name="client" id="client"  class="form-control mb-3">
     {% for client in clients %}
@@ -43,7 +43,15 @@
 </script>
 
         </div>
-        <div class="col-2"></div>
+        <div class="col-4">
+            <div class="container">
+                <form id="client-form" action="{{ url_for('projects.add_client', name=selected) }}" method="post"
+                      enctype="multipart/form-data">
+                    <input class="form-control-file" type="file" name="file" multiple>
+                    <input type="submit" value="Add Client" class="btn btn-success mt-2">
+                </form>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}

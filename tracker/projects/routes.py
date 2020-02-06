@@ -1,15 +1,15 @@
 from datetime import datetime
+
 import pandas as pd
 from flask import Blueprint
 from flask import render_template, url_for, flash, redirect, request, Markup
 from flask_login import current_user, login_required
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, SelectField, TextAreaField
+from wtforms import StringField, SubmitField, SelectField, TextAreaField
 from wtforms.validators import DataRequired
-from werkzeug.utils import secure_filename
 
-from tracker.projects.forms import (DukeForm, IPLForm, ComcastForm, CitizenForm, ClientForm)
 from tracker.projects import utils
+from tracker.projects.forms import (DukeForm, IPLForm, ComcastForm, CitizenForm)
 
 projects = Blueprint('projects', __name__)
 
@@ -85,51 +85,28 @@ def add_project(name):
     return render_template("add_project.html", form=form, clients=clients, selected=name)
 
 
-@projects.route("/add_client", methods=["GET", "POST"])
+@projects.route("/add_client/<name>", methods=["GET", "POST"])
 @login_required
-def add_client():
+def add_client(name):
     if request.method == "POST":
         files = request.files.getlist('file')
         for file in files:
             if len(file.filename.strip()) == 0:
                 flash(Markup('<strong>Warning!</strong>  No file selected'), 'warning')
-                return 'no file .......'
+                break
             if not utils.is_csv_file(file.filename):
                 flash('Please select a .csv file', 'warning')
-                return 'not a csv file'
-            df = pd.read_csv(file)
-            print(utils.create_fields(df))
-            client_obj = {'_id': utils.get_csv_filename(file.filename), 'fields': utils.create_fields(df)}
-            #utils.save_client(client_obj)
-            return 'you sent : '+str(file.filename)
-    return 'success'
-
-
-
-# record = {'project': ['stringfield', 'project', False, ''],
-#           'county': ['stringfield', 'county', True, ''],
-#           'address': ['stringfield', 'address', True, ''],
-#           'status': ['selectfield', 'status', True, 'started-In progress-completed'],
-#           'City': ['stringfield', 'city', True, 'Indianapolis'],
-#           'Notes': ['textareafield', 'notes', False, '']}
-# d = {'_id':'Duke', 'fields': record}
-
-# @main.route('/upload/<case>', methods=["GET", "POST"])
-# def upload(case):
-#     if request.method == "POST":
-#         files = request.files.getlist('file')
-#         for file in files:
-#             if len(file.filename.strip()) == 0:
-#                 flash(Markup('<strong>Warning!</strong>  No file selected'), 'warning')
-#                 return redirect(url_for('projects.project', case=case))
-#             filename = secure_filename(file.filename)
-#             file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
-#         flash('file(s) uploaded successfully', 'success')
-#         return redirect(url_for('projects.project', case=case))
-#
-#     else:
-#         return redirect(url_for('projects.project', case=case))
-
+                break
+            try:
+                df = pd.read_csv(file)
+                client_obj = {'_id': utils.get_csv_filename(file.filename), 'fields': utils.create_fields(df)}
+                utils.save_client(client_obj)
+                flash(f'client: {file.filename} was uploaded successfully', 'success')
+            except Exception as e:
+                flash(Markup(f'<strong>Danger!</strong>  An exception occurred: {e}'), 'danger')
+    form = build_form(name)
+    clients = utils.get_clients()
+    return redirect(url_for('projects.example', name=name, form=form, clients=clients, selected=name))
 
 
 @projects.route('/assign', methods=["GET", "POST"])
@@ -191,7 +168,7 @@ def projects_by_client(client_name):
     num_rows = 3
     start, begin, end = _get_page_limits(1, num_rows, len(all_projects))
     all_projects = all_projects[start:(start + num_rows)]
-    pcount = utils.get_projects_count()       # todo need fixing
+    pcount = utils.get_projects_count()  # todo need fixing
     return render_template('projects.html', title='All Projects', all_projects=all_projects, begin=begin,
                            end=end, page=1, pcount=pcount)
 
@@ -220,6 +197,3 @@ def get_client_form(data):
         return SelectField(data[1], choices=build_choices(data[3]))
     else:
         return StringField(data[1], validators=is_required(data[2]), default=data[3])
-
-
-
