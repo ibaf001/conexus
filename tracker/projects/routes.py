@@ -165,7 +165,7 @@ def example(name):
             utils.save_project(pj)
             flash('project created successfully', 'success')
 
-        return redirect(url_for('projects.example', form=form, clients=clients, selected=name))
+        return redirect(url_for('projects.example', name=name, form=form, clients=clients, selected=name))
     return render_template('example.html', clients=clients, form=form, selected=name)
 
 
