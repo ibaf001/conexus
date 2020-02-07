@@ -194,7 +194,7 @@ def update_project(project_number):
         if field.name == 'submit':
             field.label.text = 'update'
 
-    return render_template('update_project.html', form=form, client=proj['client'])
+    return render_template('update_project.html', form=form, client=proj['client'], project_number=project_number)
 
 
 
