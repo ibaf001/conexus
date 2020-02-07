@@ -12,24 +12,25 @@
     {% endfor %}
 </select>
 
+            <div class="content-section">
+                <form method="POST" action="">
+                    {{ form.hidden_tag() }}
 
-<form method="POST" action="">
-    {{ form.hidden_tag() }}
+                    {% for field in form if field.widget.input_type != 'hidden' %}
 
-        {% for field in form if field.widget.input_type != 'hidden' %}
+                    {% if field.type != 'SubmitField' %}
+                    <div class="form-group">
+                        {{ field.label(class="form-control-label") }}
+                        {{ field(class="form-control form-control-lg") }}
+                    </div>
+                    {% else %}
+                    {{ field(class="btn btn-success") }}
+                    {% endif %}
 
-            {% if field.type != 'SubmitField' %}
-            <div class="form-group">
-                {{ field.label(class="form-control-label") }}
-                {{ field(class="form-control  form-control-lg") }}
-             </div>
-            {% else %}
-                {{ field(class="btn btn-success") }}
-            {% endif %}
+                    {% endfor %}
 
-        {% endfor %}
-
-</form>
+                </form>
+            </div>
 
 
 
