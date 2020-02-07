@@ -17,7 +17,7 @@
 <header class="site-header">
     <nav class="navbar navbar-expand-md navbar-dark bg-secondary fixed-top">
         <div class="container">
-            <a class="navbar-brand mr-4" href="/">OCM Tracker</a>
+            <a class="navbar-brand mr-4" href="/">Tracker</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle"
                     aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -40,7 +40,6 @@
                 <div class="navbar-nav">
                     {% if current_user.is_authenticated %}
                         <a class="nav-item nav-link" href="{{ url_for('users.logout') }}">Logout</a>
-                        <a class="nav-item nav-link" href="{{ url_for('projects.example') }}">Example</a>
                         <a class="nav-item nav-link" href="{{ url_for('projects.get_projects') }}">Projects</a>
                     {% else %}
                         <a class="nav-item nav-link" href="{{ url_for('users.login') }}">Login</a>

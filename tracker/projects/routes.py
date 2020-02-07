@@ -197,7 +197,7 @@ def update_project(project_number):
     return render_template('update_project.html', form=form, client=proj['client'], project_number=project_number)
 
 
-@projects.route('/search_project',  methods=["GET", "POST"])
+@projects.route('/search_project',  methods=["POST"])
 @login_required
 def search_project():
     if request.method == 'POST':
