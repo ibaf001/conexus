@@ -11,8 +11,8 @@
                     <button class="btn btn-info">Add Project</button>
                 </a>
 
-                <form class="form-inline my-2 my-lg-0" style="float:right;">
-                    <input class="form-control  mr-sm-2" type="text" placeholder="Search Project ...">
+                <form class="form-inline my-2 my-lg-0" style="float:right;" action="{{ url_for('projects.search_project') }}" method="post">
+                    <input class="form-control  mr-sm-2" type="text" placeholder="Search Project ..." name="project_number">
                     <button class="btn btn-success my-2 my-sm-0">Search</button>
                 </form>
             </div>

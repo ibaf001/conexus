@@ -197,6 +197,20 @@ def update_project(project_number):
     return render_template('update_project.html', form=form, client=proj['client'], project_number=project_number)
 
 
+@projects.route('/search_project',  methods=["GET", "POST"])
+@login_required
+def search_project():
+    if request.method == 'POST':
+        project_number = request.form.get('project_number')
+        all_projects = utils.search_project(project_number)
+        num_rows = 3
+        start, begin, end = _get_page_limits(1, num_rows, len(all_projects)) # todo change number page (was replace by 1
+        all_projects = all_projects[start:(start + num_rows)]
+        pcount = utils.get_projects_count()
+        return render_template('projects.html', title='All Projects', all_projects=all_projects, begin=begin,
+                               end=end, page=1, pcount=pcount)  # todo change number page
+    return 'success'  # todo need to figure out what to return here ...
+
 
 def is_required(data):
     v = []

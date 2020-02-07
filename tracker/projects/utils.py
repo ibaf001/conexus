@@ -1,6 +1,7 @@
 from pymongo import MongoClient
 import smtplib
 from email.message import EmailMessage
+import re
 
 
 def save_project(obj):
@@ -19,7 +20,18 @@ def retrieve_project_by_id(user_id):
     projects = list()
     for result in results:
         projects.append(result)
+    client.close()
+    return projects
 
+
+def search_project(project_nuber):
+    client = MongoClient('127.0.0.1', 27017)
+    db = client['ocm']
+    regex = re.compile(project_nuber, re.IGNORECASE)
+    results = db.projects.find({'project': regex})
+    projects = list()
+    for result in results:
+        projects.append(result)
     client.close()
     return projects
 
