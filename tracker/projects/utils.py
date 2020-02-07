@@ -52,6 +52,13 @@ def get_projects_by_project_number(project_number):
     return result
 
 
+def update_project(obj, project_number):
+    client = MongoClient('127.0.0.1', 27017)
+    db = client['ocm']
+    db.projects.update({'project': project_number}, {'$set': obj})
+    client.close()
+
+
 def get_client_by_id(id):
     client = MongoClient('127.0.0.1', 27017)
     db = client['ocm']

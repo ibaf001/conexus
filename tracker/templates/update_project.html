@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %} Example {% endblock %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-2"></div>
+        <div class="col-6">
+
+            <h4>client: {{client}}</h4>
+
+
+            <form method="POST" action="" id="client_form">
+                {{ form.hidden_tag() }}
+
+                {% for field in form if field.widget.input_type != 'hidden' %}
+
+                {% if field.type != 'SubmitField' %}
+                <div class="form-group">
+                    {{ field.label(class="form-control-label") }}
+                    {{ field(class="form-control form-control-lg") }}
+                </div>
+                {% else %}
+                {{ field(class="btn btn-primary") }}
+                {% endif %}
+
+                {% endfor %}
+
+            </form>
+
+
+        </div>
+
+        <div class="col-4">
+        <p>Please update ... replace this</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

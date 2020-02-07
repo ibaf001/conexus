@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, SelectField, TextAreaField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, SelectField, TextAreaField, RadioField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
 
 
@@ -22,7 +22,7 @@ class DukeForm(FlaskForm):
     county = StringField('County', validators=[DataRequired()])
     city = StringField('City', validators=[DataRequired()])
     language = SelectField('Programming Language', choices=[('cpp', 'C++'), ('py', 'Python'), ('text', 'Plain Text')])
-
+    # gender = RadioField('gender', choices=[('value', 'description'), ('value_two', 'whatever')])
     notes = TextAreaField('Notes')
     # assignee = SelectField(u'assignee', choices=['Ibo', 'Briella'])
 

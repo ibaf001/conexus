@@ -29,9 +29,11 @@
                 <form id="upload-form" action="{{ url_for('main.upload', case=case) }}" method="post"
                       enctype="multipart/form-data">
                     <input class="form-control-file btn btn-light" type="file" name="file" multiple>
-                    <input type="submit" value="upload" class="btn btn-success mt-5">
+                    <input type="submit" value="upload" class="btn btn-success mt-3">
                 </form>
             </div>
+            <a href="{{ url_for('projects.update_project', project_number=case) }}" class="btn btn-info" style="float:right">Edit</a>
+
         </div>
     </div>
 </div>

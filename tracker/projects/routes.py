@@ -173,6 +173,31 @@ def projects_by_client(client_name):
                            end=end, page=1, pcount=pcount)
 
 
+@projects.route('/update_project/<project_number>',  methods=["GET", "POST"])
+@login_required
+def update_project(project_number):
+    if request.method == 'POST':
+        form = request.form
+        obj = dict()
+        for field in form:
+            if field not in ('submit', 'csrf_token'):
+                obj[field] = form.get(field)
+        utils.update_project(obj, project_number)
+        flash('project updated successfully', 'success')
+        return redirect(url_for('projects.update_project', form=form, project_number=project_number))
+
+    proj = utils.get_projects_by_project_number(project_number)
+    form = build_form(proj['client'])()
+    for field in form:
+        if field.name not in ('submit', 'csrf_token'):
+            field.data = proj[field.name]
+        if field.name == 'submit':
+            field.label.text = 'update'
+
+    return render_template('update_project.html', form=form, client=proj['client'])
+
+
+
 def is_required(data):
     v = []
     if data:
