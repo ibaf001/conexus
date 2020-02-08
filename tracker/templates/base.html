@@ -24,8 +24,8 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarToggle">
                 <div class="navbar-nav mr-auto">
-                    <a class="nav-item nav-link" href="{{ url_for('main.home') }}">Home</a>
-                    <a class="nav-item nav-link" href="{{ url_for('main.account') }}">Account</a>
+                    <a class="nav-item nav-link {{ 'active' if active_page == 'home' else '' }}" href="{{ url_for('main.home') }}">Home</a>
+                    <a class="nav-item nav-link {{ 'active' if active_page == 'account' else '' }}" href="{{ url_for('main.account') }}">Account</a>
 
                     <div class="btn-group">
                         <div class="nav-item nav-link dropdown-toggle" data-toggle="dropdown">Services</div>
@@ -40,12 +40,12 @@
                 <div class="navbar-nav">
                     {% if current_user.is_authenticated %}
                         <a class="nav-item nav-link" href="{{ url_for('users.logout') }}">Logout</a>
-                        <a class="nav-item nav-link" href="{{ url_for('projects.get_projects') }}">Projects</a>
+                        <a class="nav-item nav-link {{ 'active' if active_page == 'projects' else '' }}" href="{{ url_for('projects.get_projects') }}">Projects</a>
                     {% else %}
-                        <a class="nav-item nav-link" href="{{ url_for('users.login') }}">Login</a>
-                        <a class="nav-item nav-link" href="{{ url_for('users.register') }}">Register</a>
+                        <a class="nav-item nav-link {{ 'active' if active_page == 'login' else '' }}" href="{{ url_for('users.login') }}">Login</a>
+                        <a class="nav-item nav-link {{ 'active' if active_page == 'register' else '' }}" href="{{ url_for('users.register') }}">Register</a>
                     {% endif %}
-                    <a class="nav-item nav-link" href="{{ url_for('main.careers') }}">Careers</a>
+                    <a class="nav-item nav-link {{ 'active' if active_page == 'careers' else '' }}" href="{{ url_for('main.careers') }}">Careers</a>
 
                 </div>
             </div>

@@ -1,12 +1,13 @@
 {% extends "base.html" %}
-{% block title %} All Projects {% endblock %}
+{% set active_page = 'projects' %}
+<!--{% block title %} All Projects {% endblock %}-->
 {% block content %}
 
 <div class="container">
     <div class="row">
         <div class="col-9">
 
-            <div class="container">
+            <div class="container mt-4 mb-4">
                 <a href="{{ url_for('projects.add_project') }}">
                     <button class="btn btn-info">Add Project</button>
                 </a>
@@ -17,7 +18,7 @@
                 </form>
             </div>
 
-            <br><br>
+
 <table class="table table-dark table-bordered" >
     <tr>
         <th>Client</th>
@@ -34,7 +35,7 @@
     </tr>
     {% endfor %}
 </table>
-
+       {% if not search %}
        <div>
             <nav arial-label="Chapter Links">
                 <ul class="pagination justify-content-end">
@@ -54,8 +55,12 @@
                 </ul>
             </nav>
         </div>
+              {% endif %}
         </div>
-        <div class="col-3">
+
+
+
+        <div class="col-3 mt-4">
 
             <h6>Projects Summary</h6>
             <ul class="list-group">

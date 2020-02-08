@@ -14,6 +14,7 @@ projects = Blueprint('projects', __name__)
 
 num_rows = 5
 
+
 @projects.route('/projects', defaults={'page': 1})
 @projects.route('/projects/<int:page>')
 @login_required
@@ -47,7 +48,7 @@ def _get_page_limits(page, num_rows, size):
 @projects.route('/del_project/<case>')
 @login_required
 def del_project(case):
-    print('ibooo yesssssssssssssss '+str(case))
+    print('ibooo yesssssssssssssss ' + str(case))
     utils.remove_project(case)
     return redirect(url_for('projects.get_projects'))
 
@@ -123,7 +124,7 @@ def add_project(name):
     return render_template('add_project.html', clients=clients, form=form, selected=name)
 
 
-name_map = dict()
+name_map = dict()  # todo need to fix this .. put under __init__.py ?? global space
 
 
 def build_form(name):
@@ -187,16 +188,15 @@ def update_project(project_number):
 @projects.route('/search_project', methods=["POST"])
 @login_required
 def search_project():
-    if request.method == 'POST':
-        project_number = request.form.get('project_number')
-        all_projects = utils.search_project(project_number)
-        start, begin, end = _get_page_limits(1, num_rows,
-                                             len(all_projects))  # todo change number page (was replace by 1
-        all_projects = all_projects[start:(start + num_rows)]
-        pcount = utils.get_projects_count()
-        return render_template('projects.html', title='All Projects', all_projects=all_projects,
-                               end=end, page=1, pcount=pcount)  # todo change number page
-    return 'success'  # todo need to figure out what to return here ...
+    project_number = request.form.get('project_number')
+    if len(project_number.strip()) == 0:
+        return redirect(url_for('projects.get_projects'))
+    all_projects = utils.search_project(project_number)
+    start, begin, end = _get_page_limits(1, num_rows,
+                                         len(all_projects))  # todo change number page (was replace by 1
+    all_projects = all_projects[start:(start + num_rows)]
+    pcount = utils.get_projects_count()
+    return render_template('projects.html', search=True, all_projects=all_projects, pcount=pcount, title='Search')
 
 
 def is_required(data):
