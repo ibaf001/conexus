@@ -9,33 +9,31 @@ from wtforms import StringField, SubmitField, SelectField, TextAreaField
 from wtforms.validators import DataRequired
 
 from tracker.projects import utils
-from tracker.projects.forms import (DukeForm, IPLForm, ComcastForm, CitizenForm)
 
 projects = Blueprint('projects', __name__)
 
-
-
+num_rows = 5
 
 @projects.route('/projects', defaults={'page': 1})
 @projects.route('/projects/<int:page>')
 @login_required
 def get_projects(page):
     all_projects = utils.retrieve_project_by_id(current_user.email)
-    num_rows = 5
     start, begin, end = _get_page_limits(page, num_rows, len(all_projects))
     all_projects = all_projects[start:(start + num_rows)]
     pcount = utils.get_projects_count()
     return render_template('projects.html', title='All Projects', all_projects=all_projects, begin=begin,
-                           end=end, page=page, pcount=pcount, limits=_get_paginations_range(page, end))
+                           end=end, page=page, pcount=pcount, limits=_get_paginations_range(page, end),
+                           client_name=None)
 
 
 def _get_paginations_range(page, end):
     limits = []
     if page > 1:
-        limits.append(page-1)
+        limits.append(page - 1)
     limits.append(page)
     if page < end:
-        limits.append(page+1)
+        limits.append(page + 1)
     return limits
 
 
@@ -61,40 +59,6 @@ def project(case):
              "blaise.mpinga@ocmgroups.com": "Blaise Mpinga"}
     proj = utils.get_projects_by_project_number(case)
     return render_template('project.html', title='Project', case=case, users=users, proj=proj)
-
-
-# def get_form(name):
-#     name = name.lower()
-#     if name == '' or name == 'duke':
-#         return DukeForm()
-#     elif name == 'ipl':
-#         return IPLForm()
-#     elif name == 'comcast':
-#         return ComcastForm()
-#     elif name == 'citizen':
-#         return CitizenForm()
-#     else:
-#         return DukeForm()
-
-
-# @projects.route("/add_project/", defaults={'name': 'Duke'}, methods=["GET", "POST"])
-# @projects.route("/add_project/<name>", methods=["GET", "POST"])
-# @login_required
-# def add_project(name):
-#     form = get_form(name)
-#     clients = ['Duke', 'IPL', 'Comcast', 'Citizen']
-#     if form.validate_on_submit():
-#         obj = {}
-#         for field in form:
-#             if field.name not in ('csrf_token', 'submit'):
-#                 obj[field.label.text] = field.data
-#         obj['user_id'] = current_user.email
-#         obj['client'] = name
-#         obj['created_at'] = datetime.utcnow()  # TODO change to local time
-#         utils.save_project(obj)
-#         flash('project created successfully', 'success')
-#         return render_template("add_project.html", form=form, clients=clients, selected=name)
-#     return render_template("add_project.html", form=form, clients=clients, selected=name)
 
 
 @projects.route("/add_client/<name>", methods=["GET", "POST"])
@@ -173,19 +137,29 @@ def build_form(name):
     return name_map[name]
 
 
-@projects.route('/projects_by_client/<client_name>')
+@projects.route('/projects_by_client/<client_name>', defaults={'page': 1})
+@projects.route('/projects_by_client/<int:page>/<client_name>')
 @login_required
-def projects_by_client(client_name):
+def projects_by_client(client_name, page):
     all_projects = utils.get_projects_for(client_name)
-    num_rows = 3
-    start, begin, end = _get_page_limits(1, num_rows, len(all_projects))
+    start, begin, end = _get_page_limits(page, num_rows, len(all_projects))
     all_projects = all_projects[start:(start + num_rows)]
     pcount = utils.get_projects_count()  # todo need fixing
     return render_template('projects.html', title='All Projects', all_projects=all_projects, begin=begin,
-                           end=end, page=1, pcount=pcount)
+                           end=end, page=page, pcount=pcount, client_name=client_name,
+                           limits=_get_paginations_range(page, end))
 
 
-@projects.route('/update_project/<project_number>',  methods=["GET", "POST"])
+@projects.route('/forward/<int:page>', defaults={'client_name': None})
+@projects.route('/forward/<int:page>/<client_name>')
+@login_required
+def forward(client_name, page):
+    if client_name is None or client_name.strip() == '':
+        return redirect(url_for('projects.get_projects', page=page))
+    return redirect(url_for('projects.projects_by_client', client_name=client_name, page=page))
+
+
+@projects.route('/update_project/<project_number>', methods=["GET", "POST"])
 @login_required
 def update_project(project_number):
     if request.method == 'POST':
@@ -209,14 +183,15 @@ def update_project(project_number):
     return render_template('update_project.html', form=form, client=proj['client'], project_number=project_number)
 
 
-@projects.route('/search_project',  methods=["POST"])
+@projects.route('/search_project', methods=["POST"])
 @login_required
 def search_project():
     if request.method == 'POST':
         project_number = request.form.get('project_number')
         all_projects = utils.search_project(project_number)
         num_rows = 3
-        start, begin, end = _get_page_limits(1, num_rows, len(all_projects)) # todo change number page (was replace by 1
+        start, begin, end = _get_page_limits(1, num_rows,
+                                             len(all_projects))  # todo change number page (was replace by 1
         all_projects = all_projects[start:(start + num_rows)]
         pcount = utils.get_projects_count()
         return render_template('projects.html', title='All Projects', all_projects=all_projects, begin=begin,
