@@ -52,7 +52,7 @@ def retrieve_project_by_email(user_id):
 def remove_project(case):
     client = MongoClient('127.0.0.1', 27017)
     db = client['ocm']
-    db.projects.remove({'case': case})
+    db.projects.remove({'project': case})
     client.close()
 
 
@@ -86,6 +86,17 @@ def get_clients():
     lst = []
     for r in results:
         lst.append(r['_id'])
+    client.close()
+    return lst
+
+
+def get_all_projects():
+    client = MongoClient('127.0.0.1', 27017)
+    db = client['ocm']
+    results = db.projects.find({})
+    lst = []
+    for r in results:
+        lst.append(r)
     client.close()
     return lst
 

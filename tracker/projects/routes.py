@@ -18,11 +18,11 @@ num_rows = 5
 @projects.route('/projects/<int:page>')
 @login_required
 def get_projects(page):
-    all_projects = utils.retrieve_project_by_id(current_user.email)
+    all_projects = utils.get_all_projects()
     start, begin, end = _get_page_limits(page, num_rows, len(all_projects))
     all_projects = all_projects[start:(start + num_rows)]
     pcount = utils.get_projects_count()
-    return render_template('projects.html', title='All Projects', all_projects=all_projects, begin=begin,
+    return render_template('projects.html', title='All Projects', all_projects=all_projects,
                            end=end, page=page, pcount=pcount, limits=_get_paginations_range(page, end),
                            client_name=None)
 
@@ -47,6 +47,7 @@ def _get_page_limits(page, num_rows, size):
 @projects.route('/del_project/<case>')
 @login_required
 def del_project(case):
+    print('ibooo yesssssssssssssss '+str(case))
     utils.remove_project(case)
     return redirect(url_for('projects.get_projects'))
 
@@ -144,8 +145,8 @@ def projects_by_client(client_name, page):
     all_projects = utils.get_projects_for(client_name)
     start, begin, end = _get_page_limits(page, num_rows, len(all_projects))
     all_projects = all_projects[start:(start + num_rows)]
-    pcount = utils.get_projects_count()  # todo need fixing
-    return render_template('projects.html', title='All Projects', all_projects=all_projects, begin=begin,
+    pcount = utils.get_projects_count()
+    return render_template('projects.html', title='All Projects', all_projects=all_projects,
                            end=end, page=page, pcount=pcount, client_name=client_name,
                            limits=_get_paginations_range(page, end))
 
@@ -189,12 +190,11 @@ def search_project():
     if request.method == 'POST':
         project_number = request.form.get('project_number')
         all_projects = utils.search_project(project_number)
-        num_rows = 3
         start, begin, end = _get_page_limits(1, num_rows,
                                              len(all_projects))  # todo change number page (was replace by 1
         all_projects = all_projects[start:(start + num_rows)]
         pcount = utils.get_projects_count()
-        return render_template('projects.html', title='All Projects', all_projects=all_projects, begin=begin,
+        return render_template('projects.html', title='All Projects', all_projects=all_projects,
                                end=end, page=1, pcount=pcount)  # todo change number page
     return 'success'  # todo need to figure out what to return here ...
 

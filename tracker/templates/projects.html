@@ -28,8 +28,8 @@
     <tr>
         <td>{{ project['client'] }}</td>
         <td><a href="{{ url_for('projects.project', case=project['project']) }}"> {{ project['project'] }}</a></td>
-        <td> {{ project['created_at'].strftime('%m/%d/%Y %H:%M:%S') }}</td>
-        <td><a href="{{ url_for('projects.del_project', case=project['case'])}}"> delete</a>   <!--  del_project/case -->
+        <td> {{ project['created_at'].strftime('%m/%d/%Y') }}</td>
+        <td><a href="{{ url_for('projects.del_project', case=project['project']) }}"> delete</a>   <!--  del_project/case -->
         </td>
     </tr>
     {% endfor %}
