@@ -14,17 +14,29 @@ from tracker.projects.forms import (DukeForm, IPLForm, ComcastForm, CitizenForm)
 projects = Blueprint('projects', __name__)
 
 
+
+
 @projects.route('/projects', defaults={'page': 1})
 @projects.route('/projects/<int:page>')
 @login_required
 def get_projects(page):
     all_projects = utils.retrieve_project_by_id(current_user.email)
-    num_rows = 3
+    num_rows = 5
     start, begin, end = _get_page_limits(page, num_rows, len(all_projects))
     all_projects = all_projects[start:(start + num_rows)]
     pcount = utils.get_projects_count()
     return render_template('projects.html', title='All Projects', all_projects=all_projects, begin=begin,
-                           end=end, page=page, pcount=pcount)
+                           end=end, page=page, pcount=pcount, limits=_get_paginations_range(page, end))
+
+
+def _get_paginations_range(page, end):
+    limits = []
+    if page > 1:
+        limits.append(page-1)
+    limits.append(page)
+    if page < end:
+        limits.append(page+1)
+    return limits
 
 
 def _get_page_limits(page, num_rows, size):
