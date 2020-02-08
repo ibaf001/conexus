@@ -51,38 +51,38 @@ def project(case):
     return render_template('project.html', title='Project', case=case, users=users, proj=proj)
 
 
-def get_form(name):
-    name = name.lower()
-    if name == '' or name == 'duke':
-        return DukeForm()
-    elif name == 'ipl':
-        return IPLForm()
-    elif name == 'comcast':
-        return ComcastForm()
-    elif name == 'citizen':
-        return CitizenForm()
-    else:
-        return DukeForm()
+# def get_form(name):
+#     name = name.lower()
+#     if name == '' or name == 'duke':
+#         return DukeForm()
+#     elif name == 'ipl':
+#         return IPLForm()
+#     elif name == 'comcast':
+#         return ComcastForm()
+#     elif name == 'citizen':
+#         return CitizenForm()
+#     else:
+#         return DukeForm()
 
 
-@projects.route("/add_project/", defaults={'name': 'Duke'}, methods=["GET", "POST"])
-@projects.route("/add_project/<name>", methods=["GET", "POST"])
-@login_required
-def add_project(name):
-    form = get_form(name)
-    clients = ['Duke', 'IPL', 'Comcast', 'Citizen']
-    if form.validate_on_submit():
-        obj = {}
-        for field in form:
-            if field.name not in ('csrf_token', 'submit'):
-                obj[field.label.text] = field.data
-        obj['user_id'] = current_user.email
-        obj['client'] = name
-        obj['created_at'] = datetime.utcnow()  # TODO change to local time
-        utils.save_project(obj)
-        flash('project created successfully', 'success')
-        return render_template("add_project.html", form=form, clients=clients, selected=name)
-    return render_template("add_project.html", form=form, clients=clients, selected=name)
+# @projects.route("/add_project/", defaults={'name': 'Duke'}, methods=["GET", "POST"])
+# @projects.route("/add_project/<name>", methods=["GET", "POST"])
+# @login_required
+# def add_project(name):
+#     form = get_form(name)
+#     clients = ['Duke', 'IPL', 'Comcast', 'Citizen']
+#     if form.validate_on_submit():
+#         obj = {}
+#         for field in form:
+#             if field.name not in ('csrf_token', 'submit'):
+#                 obj[field.label.text] = field.data
+#         obj['user_id'] = current_user.email
+#         obj['client'] = name
+#         obj['created_at'] = datetime.utcnow()  # TODO change to local time
+#         utils.save_project(obj)
+#         flash('project created successfully', 'success')
+#         return render_template("add_project.html", form=form, clients=clients, selected=name)
+#     return render_template("add_project.html", form=form, clients=clients, selected=name)
 
 
 @projects.route("/add_client/<name>", methods=["GET", "POST"])
@@ -106,7 +106,7 @@ def add_client(name):
                 flash(Markup(f'<strong>Danger!</strong>  An exception occurred: {e}'), 'danger')
     form = build_form(name)
     clients = utils.get_clients()
-    return redirect(url_for('projects.example', name=name, form=form, clients=clients, selected=name))
+    return redirect(url_for('projects.add_project', name=name, form=form, clients=clients, selected=name))
 
 
 @projects.route('/assign', methods=["GET", "POST"])
@@ -125,9 +125,9 @@ def assign():
     return redirect(url_for('projects.project', case=project_id))
 
 
-@projects.route("/example/", defaults={'name': 'Duke'}, methods=["GET", "POST"])
-@projects.route("/example/<name>", methods=["GET", "POST"])
-def example(name):
+@projects.route("/add_project/", defaults={'name': 'Duke'}, methods=["GET", "POST"])
+@projects.route("/add_project/<name>", methods=["GET", "POST"])
+def add_project(name):
     clients = utils.get_clients()
     form = build_form(name)()
     if form.validate_on_submit():
@@ -142,8 +142,8 @@ def example(name):
             utils.save_project(pj)
             flash('project created successfully', 'success')
 
-        return redirect(url_for('projects.example', name=name, form=form, clients=clients, selected=name))
-    return render_template('example.html', clients=clients, form=form, selected=name)
+        return redirect(url_for('projects.add_project', name=name, form=form, clients=clients, selected=name))
+    return render_template('add_project.html', clients=clients, form=form, selected=name)
 
 
 name_map = dict()

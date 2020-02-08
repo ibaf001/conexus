@@ -8,24 +8,26 @@
 
             <h4>client: {{client}}</h4>
 
+            <div class="content-section">
+                <form method="POST" action="" id="client_form">
+                    {{ form.hidden_tag() }}
 
-            <form method="POST" action="" id="client_form">
-                {{ form.hidden_tag() }}
+                    {% for field in form if field.widget.input_type != 'hidden' %}
 
-                {% for field in form if field.widget.input_type != 'hidden' %}
+                    {% if field.type != 'SubmitField' %}
+                    <div class="form-group">
+                        {{ field.label(class="form-control-label") }}
+                        {{ field(class="form-control form-control-lg") }}
 
-                {% if field.type != 'SubmitField' %}
-                <div class="form-group">
-                    {{ field.label(class="form-control-label") }}
-                    {{ field(class="form-control form-control-lg") }}
-                </div>
-                {% else %}
-                {{ field(class="btn btn-primary") }}
-                {% endif %}
+                    {% else %}
+                    {{ field(class="form-control form-control-lg btn btn-primary") }}
+                    {% endif %}
+                    </div>
 
-                {% endfor %}
+                    {% endfor %}
 
-            </form>
+                </form>
+            </div>
 
 
         </div>

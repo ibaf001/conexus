@@ -1,34 +1,39 @@
 {% extends "base.html" %}
-{% block title %} Add Project {% endblock %}
+{% block title %} Example {% endblock %}
 {% block content %}
 <div class="container">
     <div class="row">
         <div class="col-2"></div>
-        <div class="col-8">
+        <div class="col-6">
 
-<select name="client" id="client"  >
+<select name="client" id="client"  class="form-control mb-3">
     {% for client in clients %}
     <option value="{{client}}" {% if client == selected %} selected="{{ selected }}" {% endif %}>{{client}}</option>
     {% endfor %}
 </select>
 
+            <div class="content-section">
+                <form method="POST" action="">
+                    {{ form.hidden_tag() }}
 
-<form method="POST" action="">
-    {{ form.hidden_tag() }}
+                    {% for field in form if field.widget.input_type != 'hidden' %}
 
-        {% for field in form if field.widget.input_type != 'hidden' %}
-        <div class="form-group">
+                    {% if field.type != 'SubmitField' %}
+                    <div class="form-group">
+                        {{ field.label(class="form-control-label") }}
+                        {{ field(class="form-control form-control-lg") }}
 
-            {% if field.type != 'SubmitField' %}
-                {{ field.label(class="form-control-label") }}
-                {{ field(class="form-control  form-control-lg") }}
-            {% else %}
-                {{ field(class="btn btn-outline-info") }}
-            {% endif %}
-        </div>
-        {% endfor %}
+                    {% else %}
+                    {{ field(class="form-control form-control-lg btn btn-success") }}
+                    {% endif %}
+                    </div>
 
-</form>
+                    {% endfor %}
+
+                </form>
+            </div>
+
+
 
 <script>
     let select_client = document.getElementById('client');
@@ -39,13 +44,16 @@
     }
 </script>
 
-
         </div>
-          <div class="col-2"></div>
+        <div class="col-4">
+            <div class="container">
+                <form id="client-form" action="{{ url_for('projects.add_client', name=selected) }}" method="post"
+                      enctype="multipart/form-data">
+                    <input class="form-control-file" type="file" name="file" multiple>
+                    <input type="submit" value="Add Client" class="btn btn-success mt-2">
+                </form>
+            </div>
+        </div>
     </div>
 </div>
-
 {% endblock %}
-
-
-
