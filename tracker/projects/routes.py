@@ -7,7 +7,7 @@ from flask_login import current_user, login_required
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, SelectField, TextAreaField
 from wtforms.validators import DataRequired
-
+from werkzeug.utils import escape
 from tracker.projects import utils
 
 projects = Blueprint('projects', __name__)
@@ -48,7 +48,6 @@ def _get_page_limits(page, num_rows, size):
 @projects.route('/del_project/<case>')
 @login_required
 def del_project(case):
-    print('ibooo yesssssssssssssss ' + str(case))
     utils.remove_project(case)
     return redirect(url_for('projects.get_projects'))
 
@@ -112,7 +111,7 @@ def add_project(name):
         pj = {}
         for field in form:
             if field.name not in ('csrf_token', 'submit'):
-                pj[field.name] = str(field.data)
+                pj[field.name] = escape(str(field.data))
         if len(pj) != 0:
             pj['user_id'] = current_user.email
             pj['client'] = name
@@ -169,7 +168,7 @@ def update_project(project_number):
         obj = dict()
         for field in form:
             if field not in ('submit', 'csrf_token'):
-                obj[field] = form.get(field)
+                obj[field] = escape(form.get(field))
         utils.update_project(obj, project_number)
         flash('project updated successfully', 'success')
         return redirect(url_for('projects.update_project', form=form, project_number=project_number))

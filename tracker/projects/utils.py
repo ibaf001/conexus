@@ -28,7 +28,7 @@ def search_project(project_nuber):
     client = MongoClient('127.0.0.1', 27017)
     db = client['ocm']
     regex = re.compile(project_nuber, re.IGNORECASE)
-    results = db.projects.find({'project': regex})
+    results = db.projects.find({'project': regex}).sort('created_at', -1)
     projects = list()
     for result in results:
         projects.append(result)
@@ -93,7 +93,7 @@ def get_clients():
 def get_all_projects():
     client = MongoClient('127.0.0.1', 27017)
     db = client['ocm']
-    results = db.projects.find({})
+    results = db.projects.find({}).sort('created_at', -1)
     lst = []
     for r in results:
         lst.append(r)
