@@ -7,7 +7,7 @@ from flask_login import current_user, login_required
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, SelectField, TextAreaField
 from wtforms.validators import DataRequired
-from werkzeug.utils import escape
+from werkzeug.utils import escape, unescape
 from tracker.projects import utils
 
 projects = Blueprint('projects', __name__)
@@ -60,6 +60,14 @@ def project(case):
              "blaise.mpinga@ocmgroups.com": "Blaise Mpinga"}
     proj = utils.get_projects_by_project_number(case)
     return render_template('project.html', title='Project', case=case, users=users, proj=proj)
+
+# todo reanalyze this method ...
+def escape_fields(d):
+    for k, v in d.items():
+        d[k] = unescape(v)
+        print(type(d[k]))
+    print('the end of the rowad ibolas ....')
+    return d
 
 
 @projects.route("/add_client/<name>", methods=["GET", "POST"])
@@ -177,7 +185,7 @@ def update_project(project_number):
     form = build_form(proj['client'])()
     for field in form:
         if field.name not in ('submit', 'csrf_token'):
-            field.data = proj[field.name]
+            field.data = unescape(proj[field.name])
         if field.name == 'submit':
             field.label.text = 'update'
 
