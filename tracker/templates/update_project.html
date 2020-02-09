@@ -18,11 +18,14 @@
                     <div class="form-group">
                         {{ field.label(class="form-control-label") }}
                         {{ field(class="form-control form-control-lg") }}
-
-                    {% else %}
-                    {{ field(class="form-control form-control-lg btn btn-primary") }}
-                    {% endif %}
                     </div>
+                    {% else %}
+                    <div class="form-group">
+
+                        {{ field(class="form-control form-control-lg btn btn-info") }}
+                    </div>
+                    {% endif %}
+
 
                     {% endfor %}
 
