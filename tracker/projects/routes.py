@@ -5,7 +5,8 @@ from flask import Blueprint
 from flask import render_template, url_for, flash, redirect, request, Markup
 from flask_login import current_user, login_required
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, SelectField, TextAreaField
+from wtforms import StringField, SubmitField, SelectField, TextAreaField, validators
+from wtforms.fields.html5 import DateField
 from wtforms.validators import DataRequired
 from werkzeug.utils import escape, unescape
 from tracker.projects import utils
@@ -59,14 +60,14 @@ def project(case):
              "gabriel@gmail": "Gabriel Bafumba", "jojo@gmail.com": "Johanna Bafumba",
              "blaise.mpinga@ocmgroups.com": "Blaise Mpinga"}
     proj = utils.get_projects_by_project_number(case)
+    proj['created at'] = datetime.strftime(proj['created at'], '%Y-%m-%d')
     return render_template('project.html', title='Project', case=case, users=users, proj=proj)
+
 
 # todo reanalyze this method ...
 def escape_fields(d):
     for k, v in d.items():
         d[k] = unescape(v)
-        print(type(d[k]))
-    print('the end of the rowad ibolas ....')
     return d
 
 
@@ -123,7 +124,7 @@ def add_project(name):
         if len(pj) != 0:
             pj['user_id'] = current_user.email
             pj['client'] = name
-            pj['created_at'] = datetime.now()  # TODO change to local time
+            pj['created at'] = datetime.now()  # TODO change to local time
             utils.save_project(pj)
             flash('project created successfully', 'success')
 
@@ -140,6 +141,7 @@ def build_form(name):
         A = type(name, (FlaskForm,), {})
         for key, value in record.items():
             setattr(A, key, get_client_form(value))
+        setattr(A, 'Due Date', DateField('Due Date', format='%Y-%m-%d', validators=(validators.Optional(),)))
         setattr(A, 'submit', SubmitField('submit'))
         name_map[name] = A
         return A
@@ -184,10 +186,15 @@ def update_project(project_number):
     proj = utils.get_projects_by_project_number(project_number)
     form = build_form(proj['client'])()
     for field in form:
-        if field.name not in ('submit', 'csrf_token'):
+        if field.name not in ('submit', 'csrf_token', 'DueDate'):
             field.data = unescape(proj[field.name])
         if field.name == 'submit':
             field.label.text = 'update'
+        if field.name == 'Due Date':
+            if proj[field.name] == 'None':
+                field.data = ''
+            else:
+                field.data = datetime.strptime(proj[field.name], '%Y-%m-%d')
 
     return render_template('update_project.html', form=form, client=proj['client'], project_number=project_number)
 
