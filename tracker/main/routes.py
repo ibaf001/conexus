@@ -4,6 +4,7 @@ from flask import Blueprint
 from flask import current_app
 from flask import render_template, url_for, flash, redirect, request, Markup
 from werkzeug.utils import secure_filename
+from datetime import datetime
 
 main = Blueprint('main', __name__)
 
@@ -11,7 +12,8 @@ main = Blueprint('main', __name__)
 @main.route("/")
 @main.route("/home")
 def home():
-    return render_template('home.html')
+    d = datetime.now()
+    return render_template('home.html', year=d.year)
 
 
 @main.route('/upload/<case>', methods=["GET", "POST"])

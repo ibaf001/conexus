@@ -7,9 +7,9 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
 
     {% if title %}
-    <title>OCM- {{ title }} </title>
+    <title>Conexus Solutions- {{ title }} </title>
     {% else %}
-    <title>OCM</title>
+    <title>Conexus Solutions</title>
     {% endif %}
 </head>
 <body>
@@ -26,19 +26,7 @@
                 <div class="navbar-nav mr-auto">
                     <a class="nav-item nav-link {{ 'active' if active_page == 'home' else '' }}" href="{{ url_for('main.home') }}">Home</a>
                     <a class="nav-item nav-link {{ 'active' if active_page == 'account' else '' }}" href="{{ url_for('main.account') }}">Account</a>
-
-                    <div class="btn-group">
-                        <div class="nav-item nav-link dropdown-toggle" data-toggle="dropdown">Services</div>
-                        <div class="dropdown-menu">
-                            <a class="dropdown-item" href="{{ url_for('main.services') }}">Loading analysis</a>
-                            <a class="dropdown-item" href="#">Aerial make ready review and solutions</a>
-                            <a class="dropdown-item" href="#"> CAD services</a>
-                            <a class="dropdown-item" href="#">GIS data entry and management</a>
-                            <a class="dropdown-item" href="#">Work order designs</a>
-                            <a class="dropdown-item" href="#"> Permitting preparation services</a>
-                            <a class="dropdown-item" href="#"> Consulting </a>
-                        </div>
-                    </div>
+                    <a class="nav-item nav-link {{ 'active' if active_page == 'account' else '' }}" href="{{ url_for('main.services') }}">Services</a>
 
                 </div>
                 <!-- Navbar Right Side -->
