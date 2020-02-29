@@ -56,6 +56,13 @@ def remove_project(case):
     client.close()
 
 
+def delete_client(name):
+    client = MongoClient('127.0.0.1', 27017)
+    db = client['ocm']
+    db.clients.delete_one({'_id': name})
+    client.close()
+
+
 def get_projects_by_project_number(project_number):
     client = MongoClient('127.0.0.1', 27017)
     db = client['ocm']

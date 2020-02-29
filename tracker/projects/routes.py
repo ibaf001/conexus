@@ -84,8 +84,13 @@ def add_client(name):
                 flash('Please select a .csv file', 'warning')
                 break
             try:
+                clients = utils.get_clients()
+                fname = utils.get_csv_filename(file.filename)
+                if fname in clients:
+                    # todo delete client because exists
+                    pass
                 df = pd.read_csv(file)
-                client_obj = {'_id': utils.get_csv_filename(file.filename), 'fields': utils.create_fields(df)}
+                client_obj = {'_id': fname, 'fields': utils.create_fields(df)}
                 utils.save_client(client_obj)
                 flash(f'client: {file.filename} was uploaded successfully', 'success')
             except Exception as e:
