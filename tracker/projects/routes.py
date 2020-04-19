@@ -20,16 +20,19 @@ num_rows = 5
 @projects.route('/projects/<int:page>')
 @login_required
 def get_projects(page):
-    all_projects = utils.get_all_projects()
-    start, begin, end = _get_page_limits(page, num_rows, len(all_projects))
-    all_projects = all_projects[start:(start + num_rows)]
-    pcount = utils.get_projects_count()
-    return render_template('projects.html', title='All Projects', all_projects=all_projects,
-                           end=end, page=page, pcount=pcount, limits=_get_paginations_range(page, end),
-                           client_name=None)
+    try:
+        all_projects = utils.get_all_projects()
+        start, begin, end = _get_page_limits(page, num_rows, len(all_projects))
+        all_projects = all_projects[start:(start + num_rows)]
+        pcount = utils.get_projects_count()
+        return render_template('projects.html', title='All Projects', all_projects=all_projects,
+                               end=end, page=page, pcount=pcount, limits=_get_pagination_range(page, end),
+                               client_name=None)
+    except:
+        return  render_template('errors/500.html')
 
 
-def _get_paginations_range(page, end):
+def _get_pagination_range(page, end):
     limits = []
     if page > 1:
         limits.append(page - 1)
@@ -163,7 +166,7 @@ def projects_by_client(client_name, page):
     pcount = utils.get_projects_count()
     return render_template('projects.html', title='All Projects', all_projects=all_projects,
                            end=end, page=page, pcount=pcount, client_name=client_name,
-                           limits=_get_paginations_range(page, end))
+                           limits=_get_pagination_range(page, end))
 
 
 @projects.route('/forward/<int:page>', defaults={'client_name': None})
