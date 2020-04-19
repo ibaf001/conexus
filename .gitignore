@@ -15,7 +15,7 @@ develop-eggs
 
 # Installer logs
 pip-log.txt
-
+__pycache__
 # Unit test / coverage reports
 .coverage
 .tox
