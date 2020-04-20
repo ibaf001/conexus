@@ -5,21 +5,21 @@ from email.message import EmailMessage
 import re
 
 
-def get_mongo_client():
-    return MongoClient(current_app.config['MONGO_URL'], 27017)
+def get_mongodb_client():
+    return MongoClient(current_app.config['MONGODB_URI'])
 
 
 def save_project(obj):
-    client = get_mongo_client()
-    db = client['ocm']
+    client = get_mongodb_client()
+    db = client.get_database()
     db.projects.save(obj)
 
     client.close()
 
 
 def retrieve_project_by_id(user_id):
-    client = get_mongo_client()
-    db = client['ocm']
+    client = get_mongodb_client()
+    db = client.get_database()
     collections = db["projects"]
     results = collections.find({"user_id": user_id}).sort('created at', -1)
     projects = list()
@@ -30,8 +30,8 @@ def retrieve_project_by_id(user_id):
 
 
 def search_project(project_nuber):
-    client = get_mongo_client()
-    db = client['ocm']
+    client = get_mongodb_client()
+    db = client.get_database()
     regex = re.compile(project_nuber, re.IGNORECASE)
     results = db.projects.find({'project': regex}).sort('created at', -1)
     projects = list()
@@ -42,8 +42,8 @@ def search_project(project_nuber):
 
 
 def retrieve_project_by_email(user_id):
-    client = get_mongo_client()
-    db = client['ocm']
+    client = get_mongodb_client()
+    db = client.get_database()
     collections = db["projects"]
     results = collections.find({"user_id": user_id}).sort('created at', -1)
     projects = list()
@@ -55,45 +55,45 @@ def retrieve_project_by_email(user_id):
 
 
 def remove_project(case):
-    client = get_mongo_client()
-    db = client['ocm']
+    client = get_mongodb_client()
+    db = client.get_database()
     db.projects.remove({'project': case})
     client.close()
 
 
 def delete_client(name):
-    client = get_mongo_client()
-    db = client['ocm']
+    client = get_mongodb_client()
+    db = client.get_database()
     db.clients.delete_one({'_id': name})
     client.close()
 
 
 def get_projects_by_project_number(project_number):
-    client = get_mongo_client()
-    db = client['ocm']
+    client = get_mongodb_client()
+    db = client.get_database()
     result = db.projects.find_one({"project": project_number})
     client.close()
     return result
 
 
 def update_project(obj, project_number):
-    client = get_mongo_client()
-    db = client['ocm']
+    client = get_mongodb_client()
+    db = client.get_database()
     db.projects.update({'project': project_number}, {'$set': obj})
     client.close()
 
 
 def get_client_by_id(id):
-    client = get_mongo_client()
-    db = client['ocm']
+    client = get_mongodb_client()
+    db = client.get_database()
     result = db.clients.find_one({"_id": id})
     client.close()
     return result
 
 
 def get_clients():
-    client = get_mongo_client()
-    db = client['ocm']
+    client = get_mongodb_client()
+    db = client.get_database()
     results = db.clients.find({})
     lst = []
     for r in results:
@@ -103,8 +103,8 @@ def get_clients():
 
 
 def get_all_projects():
-    client = get_mongo_client()
-    db = client['ocm']
+    client = get_mongodb_client()
+    db = client.get_database()
     results = db.projects.find({}).sort('created at', -1)
     lst = []
     for r in results:
@@ -114,8 +114,8 @@ def get_all_projects():
 
 
 def save_client(obj):
-    client = get_mongo_client()
-    db = client['ocm']
+    client = get_mongodb_client()
+    db = client.get_database()
     db.clients.save(obj)
     client.close()
 
@@ -139,8 +139,8 @@ def create_fields(df):
 
 
 def get_projects_count():
-    client = MongoClient('127.0.0.1', 27017)
-    db = client['ocm']
+    client = get_mongodb_client()
+    db = client.get_database()
     results = db.projects.find({})
     d = {}
     for r in results:
@@ -153,8 +153,8 @@ def get_projects_count():
 
 
 def get_projects_for(client_name):
-    client = get_mongo_client()
-    db = client['ocm']
+    client = get_mongodb_client()
+    db = client.get_database()
     results = db.projects.find({'client': client_name})
     r = list()
     for proj in results:
