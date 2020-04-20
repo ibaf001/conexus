@@ -20,7 +20,7 @@ mail = Mail()
 
 def create_app(config_class=Config):
     app = Flask(__name__)
-    app.config.from_object(Config)  # This is how we tell flask with config to use
+    app.config.from_object(config_class)  # This is how we tell flask with config to use
 
     db.init_app(app)
     bcrypt.init_app(app)
