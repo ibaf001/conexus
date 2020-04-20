@@ -153,7 +153,7 @@ def build_form(name):
         setattr(A, 'submit', SubmitField('submit'))
         name_map[name] = A
         return A
-    return name_map[name]
+    return name_map.get(name)
 
 
 @projects.route('/projects_by_client/<client_name>', defaults={'page': 1})
