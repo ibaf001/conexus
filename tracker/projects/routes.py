@@ -124,7 +124,7 @@ def assign():
 def add_project(name):
     clients = utils.get_clients()
     form = build_form(name)()
-    if form.validate_on_submit():
+    if form and form.validate_on_submit():
         pj = {}
         for field in form:
             if field.name not in ('csrf_token', 'submit'):
