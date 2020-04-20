@@ -5,12 +5,13 @@
     <div class="row">
         <div class="col-2"></div>
         <div class="col-6 mt-4">
-
-<select name="client" id="client"  class="form-control mb-3">
-    {% for client in clients %}
-    <option value="{{client}}" {% if client == selected %} selected="{{ selected }}" {% endif %}>{{client}}</option>
-    {% endfor %}
-</select>
+            {% if clients %}
+            <select name="client" id="client" class="form-control mb-3">
+                {% for client in clients %}
+                <option value="{{client}}" {% if client== selected %} selected="{{ selected }}" {% endif %}>{{client}}
+                </option>
+                {% endfor %}
+            </select>
 
             <div class="content-section">
                 <form method="POST" action="">
@@ -34,10 +35,10 @@
 
                 </form>
             </div>
+            {% endif  %}
 
 
-
-<script>
+            <script>
     let select_client = document.getElementById('client');
     select_client.onchange = function(){
         var client = select_client.value;
