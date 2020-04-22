@@ -2,6 +2,11 @@ body {
   background: #fafafa;
   color: #333333;
   margin-top: 5rem;
+
+}
+
+html, body{
+    height: 100%;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -79,6 +84,31 @@ a.article-title:hover {
   font-size: 2.5rem;
 }
 
-.someClass{
-    color: #7CFC00 !important;
+
+#foot-menu {
+  background: #3262a8;
+  color: white;
+  height:100%;
+  margin-top:50px;
 }
+
+.bt-lst{
+    margin: 10px;
+    padding: 10px;
+    list-style: none;
+}
+
+.hd-lst{
+    margin-top: 10px;
+    margin-left: 10px;
+    padding-left: 10px;
+    color:white;
+
+}
+
+#cp-right{
+    margin-top: 10px;
+}
+
+
+
