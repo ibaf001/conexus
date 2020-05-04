@@ -29,4 +29,6 @@ venv
 
 #IntelliJ
 .idea
+tests
+
 
