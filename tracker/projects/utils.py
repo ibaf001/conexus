@@ -176,3 +176,18 @@ def send_email(receiver, case_no):
         return True
     except:
         return False
+
+
+def send_message(form):
+    try:
+        msg = EmailMessage()
+        msg["subject"] = form.subject.data
+        msg['From'] = 'mbolokwa@gmail.com'
+        msg['To'] = 'blaise.mpinga@conexussolution.com'
+        msg.set_content(f'Sender Email: {form.email.data} \n Sender Message: {form.message.data}')
+        with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
+            smtp.login('mbolokwa@gmail.com', 'johanna@14')
+            smtp.send_message(msg)
+        return True
+    except Exception as e:
+        return False

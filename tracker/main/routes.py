@@ -1,12 +1,26 @@
 import os
+from datetime import datetime
 
 from flask import Blueprint
 from flask import current_app
 from flask import render_template, url_for, flash, redirect, request, Markup
+from flask_wtf import FlaskForm
 from werkzeug.utils import secure_filename
-from datetime import datetime
+from wtforms import StringField, TextAreaField, SubmitField
+from wtforms.fields.html5 import EmailField
+from wtforms.validators import DataRequired, Email
+
+from tracker.projects import utils
 
 main = Blueprint('main', __name__)
+
+
+class ContactForm(FlaskForm):
+    name = StringField("Name")
+    email = EmailField('Email', [DataRequired(), Email()])
+    subject = StringField("Subject")
+    message = TextAreaField("Message", validators=[DataRequired("Please enter a message")])
+    submit = SubmitField("Send")
 
 
 @main.route("/")
@@ -48,4 +62,12 @@ def careers():
     return render_template('careers.html')
 
 
-
+@main.route('/contactus', methods=["GET", "POST"])
+def contact():
+    form = ContactForm()
+    if form.validate_on_submit():
+        if utils.send_message(form):
+            flash('Message Sent', 'success')
+    if form.errors:
+        flash(f'{form.errors}', 'danger')
+    return render_template('contact.html', form=form)
