@@ -89,7 +89,7 @@ a.article-title:hover {
   background: #3262a8;
   color: white;
   height:100%;
-  margin-top:50px;
+  margin-top:100px;
 }
 
 .bt-lst{
@@ -105,13 +105,17 @@ a.article-title:hover {
     color:white;
 
 }
+#hm-ct{
+    margin-top: 20px;
+}
 
 #cp-right{
     margin-top: 10px;
 }
 
 .sv-title{
-    color: green;
+
+    color: #33ccff;
 }
 
 
