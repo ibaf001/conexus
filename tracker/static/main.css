@@ -98,6 +98,10 @@ a.article-title:hover {
     list-style-type: circle;
     color: #e5f0f3;
 }
+ul > li > ul {
+/* child list styles here */
+list-style-type: square;
+ }
 
 .hd-lst{
     margin-top: 10px;
