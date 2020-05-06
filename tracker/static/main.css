@@ -100,7 +100,7 @@ a.article-title:hover {
 }
 ul > li > ul {
 /* child list styles here */
-list-style-type: square;
+    list-style-type: square;
  }
 
 .hd-lst{
