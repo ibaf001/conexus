@@ -1,10 +1,8 @@
+
 body {
-  background: #fafafa;
-  color: #333333;
+  background-color: #8c8c8c;
   margin-top: 5rem;
-
 }
-
 html, body{
     height: 100%;
 }
@@ -112,6 +110,8 @@ ul > li > ul {
 }
 #hm-ct{
     margin-top: 20px;
+    margin-left: 45px;
+    margin-right: 45px;
 }
 
 #cp-right{
