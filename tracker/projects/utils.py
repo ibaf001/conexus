@@ -183,8 +183,7 @@ def send_message(form):
         msg = EmailMessage()
         msg["subject"] = form.subject.data
         msg['From'] = 'noreply.conexussolution@gmail.com'
-        #msg['To'] = 'blaise.mpinga@conexussolution.com'
-        msg['To'] = 'ibobafumba@gmail.com'
+        msg['To'] = 'blaise.mpinga@conexussolution.com'
         msg.set_content(f'Sender Email: {form.email.data} \n Sender Message: {form.message.data}')
         with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
             smtp.login('noreply.conexussolution@gmail.com', 'lbxwkslobobdhuaw')
